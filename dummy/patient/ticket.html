@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Ticket - MedCampus</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body style="background: #f1f5f9; padding: 40px 0;">
+
+    <div class="container" style="max-width: 800px; margin-bottom: 24px; display: flex; justify-content: space-between;">
+        <button onclick="history.back()" class="btn btn-outline" style="background: white; border: none; cursor: pointer;">← Go Back</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨 Print Ticket</button>
+    </div>
+
+    <div class="container" style="max-width: 800px; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); padding: 0;">
+        
+        <div class="ticket-head flex-between">
+            <div style="text-align: left;">
+                <h3 style="display: flex; align-items: center; gap: 8px;">MedCampus</h3>
+                <p style="font-size: 14px; opacity: 0.9;">Official Appointment Digital Ticket</p>
+            </div>
+            <div style="text-align: right;">
+                <p style="font-size: 12px; font-weight: 700; letter-spacing: 1px;">QUEUE NUMBER</p>
+                <h2>A-12</h2>
+            </div>
+        </div>
+
+        <div style="padding: 40px;" class="grid-2">
+            <!-- QR Area -->
+            <div style="text-align: center; border-right: 1px dashed var(--border); padding-right: 40px;">
+                <div style="width: 200px; height: 200px; background: #fed7aa; margin: 0 auto 24px; display: flex; justify-content: center; align-items: center; border-radius: 12px;">
+                    <div style="width: 100px; height: 100px; background: white; border: 1px solid var(--border);">QR CODE</div>
+                </div>
+                <p style="font-size: 13px; color: var(--text-gray);">Scan at clinic reception</p>
+                <h3 style="color: var(--primary-green); margin-top: 8px;">#MC-88291</h3>
+            </div>
+
+            <!-- Info Area -->
+            <div style="padding-left: 20px;">
+                <h3 style="margin-bottom: 24px;">Patient & Appointment Information</h3>
+                
+                <div class="flex-between" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Patient Name</span>
+                    <span style="font-weight: 600;">John Doe</span>
+                </div>
+                <div class="flex-between" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Student ID (NIM)</span>
+                    <span style="font-weight: 600;">12345678</span>
+                </div>
+                <div class="flex-between" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Clinic</span>
+                    <span style="font-weight: 600; color: var(--primary-green);">General Clinic</span>
+                </div>
+                <div class="flex-between" style="border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Attending Doctor</span>
+                    <span style="font-weight: 600;">Dr. Sarah Smith</span>
+                </div>
+                <div class="flex-between" style="padding-bottom: 12px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Scheduled Time</span>
+                    <span style="font-weight: 600;">10:30 AM</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="background: var(--bg-gray); padding: 24px 40px; border-top: 1px solid var(--border);">
+            <h4 style="margin-bottom: 8px; color: var(--dark-navy);">ⓘ Important Instructions:</h4>
+            <ul style="font-size: 13px; color: var(--text-gray); padding-left: 20px; list-style-type: disc;">
+                <li style="margin-bottom: 4px;">Please arrive at the clinic at least 10 minutes before your scheduled time.</li>
+                <li style="margin-bottom: 4px;">Present this digital ticket or a printed copy at the reception counter.</li>
+                <li style="margin-bottom: 4px;">Ensure you have your Student ID (KTM) ready for verification.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

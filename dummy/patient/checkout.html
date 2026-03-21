@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Checkout - MedCampus</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">MedCampus</div>
+            <div class="nav-profile">
+                <div class="profile-dropdown"><span class="profile-name">Andi Pratama ⌄</span></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <h1 style="margin-bottom: 8px;">Payment Checkout</h1>
+        <p style="color: var(--text-gray); margin-bottom: 40px;">Please review your appointment details and complete the payment to secure your slot.</p>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px;">
+            <!-- LEFT COLUMN -->
+            <div>
+                <h3 style="margin-bottom: 16px;">Appointment Summary</h3>
+                <div class="card card-shadow grid-2">
+                    <div>
+                        <p style="font-size: 11px; color: var(--text-gray); font-weight: 700; text-transform: uppercase;">Clinic & Service</p>
+                        <p style="font-weight: 600; font-size: 16px;">General Clinic</p>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px;">Internal Medicine Consultation</p>
+                        
+                        <div style="display: flex; gap: 12px; align-items: center; background: var(--bg-gray); padding: 12px; border-radius: 8px;">
+                            <div style="width: 40px; height: 40px; background: #cbd5e1; border-radius: 50%;"></div>
+                            <div>
+                                <h4 style="font-size: 14px;">dr. Budi Santoso, Sp.PD</h4>
+                                <p style="font-size: 12px; color: var(--primary-green);">Internal Medicine Specialist</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p style="font-size: 11px; color: var(--text-gray); font-weight: 700; text-transform: uppercase;">Schedule</p>
+                        <p style="font-weight: 600; font-size: 16px;">Friday, October 6, 2026</p>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 16px;">09:00 - 10:00 WIB</p>
+                        
+                        <div style="background: #eff6ff; color: #1d4ed8; padding: 12px; border-radius: 8px; font-size: 12px;">
+                            ⏱ Arrival at least 15 mins before schedule is recommended.
+                        </div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 32px; margin-bottom: 16px;">Select Payment Method</h3>
+                <div class="card card-shadow">
+                    <div class="payment-card active">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 6px solid var(--primary-green); background: white;"></div>
+                            <div>
+                                <h4 style="font-size: 15px;">Student ID Balance</h4>
+                                <p style="font-size: 12px; color: var(--text-gray);">Fast & direct deduction from your campus account</p>
+                            </div>
+                        </div>
+                        <h4 style="color: var(--primary-green);">Rp 450.000</h4>
+                    </div>
+
+                    <div class="payment-card">
+                        <div style="display: flex; gap: 16px; align-items: center;">
+                            <div style="width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--text-gray);"></div>
+                            <div>
+                                <h4 style="font-size: 15px;">Virtual Account (VA)</h4>
+                                <p style="font-size: 12px; color: var(--text-gray);">BCA, Mandiri, BNI, or BRI</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: BILL -->
+            <div>
+                <div class="card card-shadow">
+                    <h3 style="margin-bottom: 24px;">Bill Breakdown</h3>
+                    <div class="flex-between" style="margin-bottom: 16px; font-size: 14px;">
+                        <span style="color: var(--text-gray);">Consultation Fee</span>
+                        <span>Rp 150.000</span>
+                    </div>
+                    <div class="flex-between" style="margin-bottom: 24px; font-size: 14px; border-bottom: 1px dashed var(--border); padding-bottom: 24px;">
+                        <span style="color: var(--text-gray);">Service Fee</span>
+                        <span>Rp 15.000</span>
+                    </div>
+                    <div class="flex-between" style="margin-bottom: 24px; font-size: 18px; font-weight: 700;">
+                        <span>Total Amount</span>
+                        <span style="color: var(--primary-green);">Rp 165.000</span>
+                    </div>
+                    
+                    <a href="success.html" class="btn btn-primary" style="width: 100%; text-align: center;">Confirm & Pay →</a>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

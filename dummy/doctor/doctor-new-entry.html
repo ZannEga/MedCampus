@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Medical Entry - MedCampus</title>
+    <link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    MedCampus
+                </div>
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search patients...">
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="doctor-dashboard.html">Dashboard</a>
+                <a href="doctor-patients.html">Today's Patients</a>
+                <a href="doctor-records.html" class="active">Medical Records</a>
+                <a href="doctor-schedule.html">Schedule</a>
+            </div>
+
+            <div class="nav-profile">
+                <div class="icon-btn">🔔</div>
+                <div class="profile-dropdown">
+                    <div class="profile-avatar">
+                        <img src="https://placehold.co/100x100/e2e8f0/64748b?text=Dr" alt="Doctor">
+                    </div>
+                    <span class="profile-name">Dr. Sarah ⌄</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container" style="max-width: 900px;">
+        
+        <div class="flex-between" style="margin-bottom: 32px;">
+            <div>
+                <h1 style="font-size: 28px; margin-bottom: 8px;">New Medical Entry - <span style="color: var(--primary-green);">Patient: John Doe</span></h1>
+                <p style="color: var(--text-gray); font-size: 13px; display: flex; gap: 16px;">
+                    <span>⚙ Patient ID: #12345</span>
+                    <span>📅 Last Visit: 12 Oct 2026</span>
+                </p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <a href="doctor-records.html" class="btn btn-outline">Cancel</a>
+                <button class="btn btn-primary" style="background: var(--primary-green);">💾 Save Draft</button>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 40px;">
+            <form action="doctor-records.html">
+                
+                <!-- 1. Vitals -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><span style="color: var(--primary-green);">📈</span> 1. Patient Vitals</h2>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label class="form-label">Blood Pressure (mmHg)</label>
+                            <div class="input-with-suffix">
+                                <input type="text" class="form-input" placeholder="e.g. 120/80">
+                                <span class="suffix-text">mmHg</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Heart Rate (bpm)</label>
+                            <div class="input-with-suffix">
+                                <input type="text" class="form-input" placeholder="e.g. 72">
+                                <span class="suffix-text">bpm</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Temperature (°C)</label>
+                            <div class="input-with-suffix">
+                                <input type="text" class="form-input" placeholder="e.g. 36.6">
+                                <span class="suffix-text">°C</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Diagnosis -->
+                <div class="form-section">
+                    <h2 class="form-section-title"><span style="color: var(--primary-green);">🩺</span> 2. Diagnosis & Symptoms</h2>
+                    <div class="form-group">
+                        <label class="form-label">Presenting Symptoms</label>
+                        <textarea class="form-textarea" placeholder="Describe symptoms reported by patient..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Primary Diagnosis</label>
+                        <input type="text" class="form-input" placeholder="Enter ICD-10 or clinical diagnosis">
+                    </div>
+                </div>
+
+                <!-- 3. Prescription -->
+                <div class="form-section">
+                    <div class="flex-between" style="margin-bottom: 20px;">
+                        <h2 class="form-section-title" style="margin-bottom: 0;"><span style="color: var(--primary-green);">💊</span> 3. Prescription</h2>
+                        <span style="color: var(--primary-green); font-size: 13px; font-weight: 600; cursor: pointer;">⊕ Add Medication</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 2fr 40px; gap: 16px; margin-bottom: 8px; font-size: 11px; font-weight: 700; color: var(--text-gray); text-transform: uppercase;">
+                        <span>Medication Name</span>
+                        <span>Dosage</span>
+                        <span>Frequency</span>
+                        <span></span>
+                    </div>
+
+                    <!-- Row 1 (Filled) -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 2fr 40px; gap: 16px; margin-bottom: 16px; align-items: center;">
+                        <input type="text" class="form-input" value="Amoxicillin 500mg" readonly style="background: var(--bg-gray); font-weight: 600;">
+                        <input type="text" class="form-input" value="1 Capsule" readonly style="background: var(--bg-gray);">
+                        <input type="text" class="form-input" value="Three times daily (TID)" readonly style="background: var(--bg-gray);">
+                        <button type="button" class="icon-btn" style="color: #ef4444; border: none; background: #fee2e2;">🗑</button>
+                    </div>
+
+                    <!-- Row 2 (Input) -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr 2fr 40px; gap: 16px; margin-bottom: 16px; align-items: center;">
+                        <input type="text" class="form-input" placeholder="Click to add name...">
+                        <input type="text" class="form-input" placeholder="e.g. 5ml">
+                        <input type="text" class="form-input" placeholder="e.g. Once daily">
+                        <div></div>
+                    </div>
+                </div>
+
+                <!-- 4. Clinical Notes -->
+                <div class="form-section" style="margin-bottom: 0;">
+                    <h2 class="form-section-title"><span style="color: var(--primary-green);">📝</span> 4. Clinical Notes</h2>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Detailed Observations</label>
+                        <textarea class="form-textarea" placeholder="Enter detailed physical examination findings, recommendations, or patient history updates..." style="min-height: 150px;"></textarea>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--border); margin-top: 40px; padding-top: 32px; display: flex; justify-content: flex-end; gap: 16px; align-items: center;">
+                    <span style="color: var(--text-gray); font-size: 14px; cursor: pointer; margin-right: auto;">Discard Draft</span>
+                    <button type="button" class="btn btn-outline">Save as Template</button>
+                    <button type="submit" class="btn btn-primary">Finalize & Submit Entry</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 24px 0 40px; color: var(--text-gray); font-size: 12px;">
+        © 2026 MedCampus Portal. HIPAA Compliant Environment.
+    </footer>
+</body>
+</html>

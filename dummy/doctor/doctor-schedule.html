@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule - MedCampus</title>
+    <link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+
+    <!-- HEADER STANDAR DASHBOARD -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    MedCampus
+                </div>
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search patients...">
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="doctor-dashboard.html">Dashboard</a>
+                <a href="doctor-patients.html">Today's Patients</a>
+                <a href="doctor-records.html">Medical Records</a>
+                <!-- Class Active Pindah ke Schedule -->
+                <a href="doctor-schedule.html" class="active">Schedule</a>
+            </div>
+
+            <div class="nav-profile">
+                <div class="icon-btn">🔔</div>
+                <div class="profile-dropdown">
+                    <div class="profile-avatar"><img src="https://placehold.co/100x100/e2e8f0/64748b?text=Dr" alt="Doctor"></div>
+                    <span class="profile-name">Dr. Sarah ⌄</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <div class="flex-between" style="margin-bottom: 32px;">
+            <div>
+                <h1 style="font-size: 32px; margin-bottom: 8px;">Schedule</h1>
+                <p style="color: var(--text-gray); font-size: 15px;">Weekly clinic room assignments and consultation times.</p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-outline flex-between" style="gap: 8px;">🖨 Print</button>
+                <button class="btn btn-primary flex-between" style="gap: 8px;">➕ New Appointment</button>
+            </div>
+        </div>
+
+        <div class="flex-between" style="background: var(--white); padding: 16px 24px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 24px;">
+            <div style="font-weight: 600; font-size: 16px; display: flex; align-items: center; gap: 16px;">
+                <span style="cursor: pointer; color: var(--text-gray);">&lt;</span>
+                October 21 - 25, 2026
+                <span style="cursor: pointer; color: var(--text-gray);">&gt;</span>
+            </div>
+            <div style="background: var(--bg-gray); padding: 4px; border-radius: 8px; display: flex; gap: 4px;">
+                <button class="btn btn-outline" style="border: none; background: var(--white); box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Weekly</button>
+                <button class="btn btn-outline" style="border: none; background: transparent; color: var(--text-gray);">Monthly</button>
+            </div>
+        </div>
+
+        <div class="schedule-wrapper">
+            <div class="schedule-grid">
+                <!-- Header Row -->
+                <div class="schedule-header">TIME</div>
+                <div class="schedule-header">MON <br><span style="font-size: 16px; color: var(--dark-navy);">21</span></div>
+                <div class="schedule-header">TUE <br><span style="font-size: 16px; color: var(--dark-navy);">22</span></div>
+                <div class="schedule-header" style="color: var(--primary-green);">WED (TODAY) <br><span style="font-size: 16px;">23</span></div>
+                <div class="schedule-header">THU <br><span style="font-size: 16px; color: var(--dark-navy);">24</span></div>
+                <div class="schedule-header">FRI <br><span style="font-size: 16px; color: var(--dark-navy);">25</span></div>
+
+                <!-- 08:00 AM Row -->
+                <div class="schedule-time">08:00<br>AM</div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room A</h4><p>General Checkup</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room B</h4><p>Consultation</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block"><h4>Room A</h4><p>Morning Rounds</p></div>
+                </div>
+                <div class="schedule-cell"></div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room C</h4><p>Surgery Prep</p></div>
+                </div>
+
+                <!-- 10:00 AM Row -->
+                <div class="schedule-time">10:00<br>AM</div>
+                <div class="schedule-cell"></div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room B</h4><p>Follow-up (4)</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block"><h4>Room B</h4><p>Urgent Care</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room C</h4><p>Specialized Surgery</p></div>
+                </div>
+                <div class="schedule-cell"></div>
+
+                <!-- LUNCH BREAK -->
+                <div class="lunch-break">🍴 LUNCH BREAK</div>
+
+                <!-- 02:00 PM Row -->
+                <div class="schedule-time">02:00<br>PM</div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room A</h4><p>Consultation</p></div>
+                </div>
+                <div class="schedule-cell"></div>
+                <div class="schedule-cell">
+                    <div class="schedule-block"><h4>Room C</h4><p>Telehealth Session</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room A</h4><p>Review Board</p></div>
+                </div>
+                <div class="schedule-cell">
+                    <div class="schedule-block disabled"><h4>Room B</h4><p>Weekly Summary</p></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+</body>
+</html>

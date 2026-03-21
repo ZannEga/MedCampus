@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visit Details - MedCampus</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">MedCampus</div>
+            <div class="nav-links">
+                <a href="dashboard.html">Home</a>
+                <a href="booking.html">Book Appointment</a>
+                <a href="history.html" class="active">Medical History</a>
+            </div>
+            <div class="nav-profile">
+                <div class="profile-dropdown"><span class="profile-name">John Doe ⌄</span></div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <a href="history.html" style="color: var(--primary-green); font-size: 14px; font-weight: 600;">← Back to Medical History</a>
+        
+        <div class="flex-between" style="margin-top: 24px; margin-bottom: 32px;">
+            <div>
+                <p style="font-size: 12px; color: var(--text-gray); font-weight: 700; text-transform: uppercase;">Completed Visit • ID: MC-20261012</p>
+                <h1 style="margin-top: 8px;">Visit Details - Oct 12, 2026</h1>
+            </div>
+            <button class="btn btn-primary">📥 Download PDF</button>
+        </div>
+
+        <div class="detail-grid">
+            <!-- LEFT COLUMN: MEDICAL DATA -->
+            <div>
+                <!-- Diagnosis -->
+                <div class="card card-shadow" style="border-left: 4px solid var(--primary-green);">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <span style="background: var(--light-green); padding: 8px; border-radius: 8px;">📄</span> Diagnosis Summary
+                    </h3>
+                    <h4 style="color: var(--primary-green); margin-bottom: 8px;">Common Cold (Upper Respiratory Tract Infection)</h4>
+                    <p style="color: var(--text-gray); font-size: 14px;">Patient presented with symptoms including a sore throat, mild nasal congestion, and a low-grade fever. Physical examination revealed mild pharyngeal erythema. Vitals are stable.</p>
+                </div>
+
+                <!-- Doctor's Advice -->
+                <div class="card card-shadow">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+                        <span style="background: var(--light-green); padding: 8px; border-radius: 8px;">👨‍⚕️</span> Doctor's Notes & Advice
+                    </h3>
+                    <p style="font-size: 14px; margin-bottom: 16px;">Please follow these instructions to ensure a speedy recovery:</p>
+                    <ul style="font-size: 14px; color: var(--dark-navy); list-style: none;">
+                        <li style="margin-bottom: 12px;">✅ Increase fluid intake (at least 8-10 glasses of water per day).</li>
+                        <li style="margin-bottom: 12px;">✅ Get plenty of rest for the next 48 hours.</li>
+                        <li style="margin-bottom: 12px;">✅ Gargle with warm salt water to relieve throat discomfort.</li>
+                    </ul>
+                </div>
+
+                <!-- Prescribed Medicines -->
+                <div class="card card-shadow">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+                        <span style="background: var(--light-green); padding: 8px; border-radius: 8px;">💊</span> Prescribed Medicines
+                    </h3>
+                    
+                    <div class="med-header">
+                        <span>Medicine Name</span>
+                        <span>Dosage</span>
+                        <span>Frequency</span>
+                        <span>Duration</span>
+                    </div>
+                    
+                    <div class="med-row">
+                        <div>
+                            <p class="med-name">Paracetamol</p>
+                            <p class="med-desc">Analgesic & Antipyretic</p>
+                        </div>
+                        <p>500mg</p>
+                        <p>3 times a day, after meals</p>
+                        <p>5 Days</p>
+                    </div>
+                    
+                    <div class="med-row" style="border-bottom: none;">
+                        <div>
+                            <p class="med-name">Vitamin C</p>
+                            <p class="med-desc">Supplement</p>
+                        </div>
+                        <p>500mg</p>
+                        <p>Once daily, in the morning</p>
+                        <p>10 Days</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: CLINIC INFO -->
+            <div>
+                <div class="card card-shadow">
+                    <h3 style="margin-bottom: 24px;">Clinic Information</h3>
+                    
+                    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                        <div style="color: var(--primary-green);">📍</div>
+                        <div>
+                            <h4 style="font-size: 14px;">Main Campus Health Center</h4>
+                            <p style="font-size: 13px; color: var(--text-gray);">123 University Ave, Bldg B, Floor 2</p>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+                        <div style="color: var(--primary-green);">📞</div>
+                        <div>
+                            <h4 style="font-size: 14px;">+1 (555) 123-4567</h4>
+                            <p style="font-size: 13px; color: var(--text-gray);">Mon - Fri, 8:00 AM - 6:00 PM</p>
+                        </div>
+                    </div>
+
+                    <!-- Map Placeholder -->
+                    <div style="width: 100%; height: 150px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-gray); font-weight: 600;">
+                        MAP AREA
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

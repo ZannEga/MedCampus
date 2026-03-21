@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Confirmed - MedCampus</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body style="background: var(--bg-gray);">
+    
+    <main class="container" style="padding: 80px 0; text-align: center;">
+        <div class="success-circle">
+            <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <h1 style="font-size: 32px; margin-bottom: 12px;">Appointment Confirmed!</h1>
+        <p style="color: var(--text-gray); margin-bottom: 40px;">Your reservation has been successfully booked. You can now view your digital ticket.</p>
+
+        <div class="ticket-wrapper">
+            <div class="flex-between" style="background: var(--primary-green); color: white; padding: 16px 24px;">
+                <span style="font-size: 12px; font-weight: 700; letter-spacing: 1px;">APPOINTMENT SUMMARY</span>
+                <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">Verified</span>
+            </div>
+            
+            <div style="padding: 32px 24px;">
+                <p style="font-size: 12px; color: var(--text-gray); font-weight: 700; letter-spacing: 1px;">QUEUE NUMBER</p>
+                <h2 style="font-size: 64px; color: var(--primary-green); margin-bottom: 32px; line-height: 1;">A-12</h2>
+
+                <div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 16px; margin-bottom: 16px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Appointment ID</span>
+                    <span style="font-weight: 600;">MC-88291</span>
+                </div>
+                <div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 16px; margin-bottom: 16px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Clinic</span>
+                    <span style="font-weight: 600;">General Clinic</span>
+                </div>
+                <div class="flex-between" style="border-bottom: 1px dashed var(--border); padding-bottom: 16px; margin-bottom: 32px;">
+                    <span style="color: var(--text-gray); font-size: 14px;">Date</span>
+                    <span style="font-weight: 600;">Friday, October 6, 2026</span>
+                </div>
+
+                <div style="background: var(--bg-gray); padding: 16px; border-radius: 8px; display: inline-block;">
+                    <!-- Placeholder QR -->
+                    <div style="width: 80px; height: 80px; background: white; border: 1px solid var(--border); margin: 0 auto 8px; display: flex; align-items: center; justify-content: center;">QR</div>
+                    <p style="font-size: 10px; font-weight: 700; color: var(--text-gray);">SCAN AT KIOSK</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 32px; display: flex; gap: 16px; justify-content: center;">
+            <a href="ticket.html" class="btn btn-primary">🎟 View Digital Ticket</a>
+            <a href="dashboard.html" class="btn btn-outline" style="background: white;">🏠 Return to Home</a>
+        </div>
+    </main>
+</body>
+</html>

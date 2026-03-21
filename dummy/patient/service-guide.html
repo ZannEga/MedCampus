@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Guide - MedCampus</title>
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body style="background: var(--bg-gray);">
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                MedCampus
+            </div>
+            <div class="nav-links">
+                <a href="dashboard.html">Home</a>
+                <a href="booking.html">Book Appointment</a>
+                <a href="history.html">Medical History</a>
+            </div>
+            <div class="nav-profile">
+                <div class="profile-dropdown">
+                    <div class="profile-avatar"></div>
+                    <span class="profile-name">John Doe ⌄</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <div class="service-hero">
+            <h1>How to use MedCampus</h1>
+            <p>Your health journey made simple. Follow these easy steps to manage your medical visits, from booking to viewing results.</p>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 40px;">
+            <div class="step-card">
+                <div class="step-icon-wrapper">
+                    <div class="step-number">1</div>
+                    <div class="step-icon-box">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                </div>
+                <h3>Make a Reservation</h3>
+                <p>Choose your preferred clinic and specialist doctor from our extensive network. Select a time slot that works best for your schedule.</p>
+                <a href="booking.html" class="btn btn-primary" style="width: 100%;">Book Now</a>
+            </div>
+
+            <div class="step-card">
+                <div class="step-icon-wrapper">
+                    <div class="step-number">2</div>
+                    <div class="step-icon-box">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                </div>
+                <h3>Track Your Queue</h3>
+                <p>Get your digital ticket instantly. Monitor your position in the live queue via your mobile device and arrive just in time.</p>
+                <a href="queue-detail.html" class="btn btn-primary" style="width: 100%;">Live Status</a>
+            </div>
+
+            <div class="step-card">
+                <div class="step-icon-wrapper">
+                    <div class="step-number">3</div>
+                    <div class="step-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                </div>
+                <h3>View Results</h3>
+                <p>Access your full medical history, lab results, and digital prescriptions securely in your profile immediately after the consultation.</p>
+                <a href="history.html" class="btn btn-primary" style="width: 100%;">My History</a>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready to get started?</h2>
+            <p>Explore all the features MedCampus has to offer.</p>
+            <a href="dashboard.html" class="btn btn-outline" style="border-color: var(--primary-green); color: var(--primary-green); background: white;">← Back to Home</a>
+        </div>
+    </main>
+
+    <footer class="footer" style="background: transparent; border-top: none;">
+        <div class="container footer-content" style="border-top: 1px solid var(--border); padding-top: 24px;">
+            <span>© 2026 MedCampus Digital Health. All rights reserved.</span>
+            <div style="display: flex; gap: 24px;">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Support</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

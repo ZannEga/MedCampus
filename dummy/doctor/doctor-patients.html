@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Patients - MedCampus</title>
+    <link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="nav-logo">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    MedCampus
+                </div>
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search patients...">
+                </div>
+            </div>
+            
+            <div class="nav-links">
+                <a href="doctor-dashboard.html">Dashboard</a>
+                <a href="doctor-patients.html" class="active">Today's Patients</a>
+                <a href="doctor-records.html">Medical Records</a>
+                <a href="doctor-schedule.html">Schedule</a>
+            </div>
+
+            <div class="nav-profile">
+                <div class="icon-btn">🔔</div>
+                <div class="profile-dropdown">
+                    <div class="profile-avatar">
+                        <img src="https://placehold.co/100x100/e2e8f0/64748b?text=Dr" alt="Doctor">
+                    </div>
+                    <span class="profile-name">Dr. Sarah ⌄</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content container">
+        <div class="flex-between" style="margin-bottom: 32px; align-items: flex-end;">
+            <div>
+                <h1 style="font-size: 32px; margin-bottom: 8px;">Today's Patients</h1>
+                <p style="color: var(--text-gray); font-size: 14px;">Monday, Oct 24th • <span style="color: var(--primary-green); font-weight: 600;">12 patients remaining</span></p>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-outline" style="border-color: var(--primary-green); color: var(--primary-green); background: var(--light-green);">In Queue</button>
+                <button class="btn btn-outline">Completed</button>
+                <button class="btn btn-outline">All Appointments</button>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 40px;">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Queue No.</th>
+                            <th>Patient Name</th>
+                            <th>Appointment Time</th>
+                            <th>Visit Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="queue-badge">A-12</span></td>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="patient-avatar">👤</div>
+                                    <div class="patient-info">
+                                        <h4>John Smith</h4>
+                                        <p>Male, 34 yrs</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>09:00 AM</td>
+                            <td><span class="badge badge-followup" style="background: transparent; border: 1px solid #4f46e5;">Follow-up</span></td>
+                            <td><span class="badge badge-waiting">Waiting</span></td>
+                            <td><button class="btn btn-primary">Start Exam</button></td>
+                        </tr>
+                        <tr>
+                            <td><span class="queue-badge">A-13</span></td>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="patient-avatar">👤</div>
+                                    <div class="patient-info">
+                                        <h4>Emily Davis</h4>
+                                        <p>Female, 28 yrs</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>09:30 AM</td>
+                            <td><span class="badge" style="color: #9333ea; border: 1px solid #9333ea;">Consultation</span></td>
+                            <td><span class="badge badge-waiting">Waiting</span></td>
+                            <td><button class="btn btn-primary">Start Exam</button></td>
+                        </tr>
+                        <tr style="background: #f8fafc;">
+                            <td><span class="queue-badge" style="background: #dcfce7; color: #16a34a;">A-14</span></td>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="patient-avatar" style="background: #dcfce7; border-color: #16a34a; color: #16a34a;">👤</div>
+                                    <div class="patient-info">
+                                        <h4>Robert Wilson</h4>
+                                        <p>Male, 45 yrs</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>10:00 AM</td>
+                            <td><span class="badge badge-urgent" style="background: transparent; border: 1px solid #ef4444;">Urgent Visit</span></td>
+                            <td><span class="badge badge-consultation">In Progress</span></td>
+                            <td><button class="btn btn-outline" style="border-color: var(--primary-green); color: var(--primary-green);">Resume</button></td>
+                        </tr>
+                        <tr>
+                            <td><span class="queue-badge">A-15</span></td>
+                            <td>
+                                <div class="patient-cell">
+                                    <div class="patient-avatar">👤</div>
+                                    <div class="patient-info">
+                                        <h4>Sarah Brown</h4>
+                                        <p>Female, 52 yrs</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>10:30 AM</td>
+                            <td><span class="badge badge-followup" style="background: transparent; border: 1px solid #4f46e5;">Follow-up</span></td>
+                            <td><span class="badge badge-waiting">Waiting</span></td>
+                            <td><button class="btn btn-primary">Start Exam</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex-between" style="padding: 16px 24px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-gray);">
+                <span>Showing <strong>4</strong> of <strong>12</strong> remaining patients</span>
+                <div style="display: flex; gap: 8px;">
+                    <button class="icon-btn" style="border-radius: 4px;">&lt;</button>
+                    <button class="icon-btn" style="border-radius: 4px; background: var(--primary-green); color: white; border-color: var(--primary-green);">1</button>
+                    <button class="icon-btn" style="border-radius: 4px;">2</button>
+                    <button class="icon-btn" style="border-radius: 4px;">3</button>
+                    <button class="icon-btn" style="border-radius: 4px;">&gt;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card stat-card" style="background: var(--light-green); border: none;">
+                <div class="stat-header">
+                    <span class="stat-title" style="color: var(--primary-green);">Patients Completed</span>
+                    <div style="color: var(--primary-green);">👥</div>
+                </div>
+                <div>
+                    <div class="stat-value" style="color: var(--primary-green);">08</div>
+                    <div class="stat-desc" style="color: var(--primary-green); opacity: 0.8; text-transform: uppercase; font-size: 11px; font-weight: 700;">Target: 20 per day</div>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Avg. Wait Time</span>
+                    <div class="stat-icon" style="background: #f1f5f9; color: var(--text-gray); width: 24px; height: 24px;">⏱</div>
+                </div>
+                <div>
+                    <div class="stat-value">14m</div>
+                    <div class="stat-desc">⬇ 2m from yesterday</div>
+                </div>
+            </div>
+            <div class="card stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Clinical Notes</span>
+                    <div class="stat-icon" style="background: #f1f5f9; color: var(--text-gray); width: 24px; height: 24px;">📝</div>
+                </div>
+                <div>
+                    <div class="stat-value">92%</div>
+                    <div class="stat-desc">Sync Status: Active</div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
