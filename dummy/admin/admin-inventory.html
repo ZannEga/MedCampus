@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - MedCampus Admin</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            MedCampus
+        </div>
+        <nav class="sidebar-nav">
+            <a href="admin-dashboard.html"><svg><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+            <a href="admin-inventory.html" class="active"><svg><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Inventory</a>
+            <a href="admin-users.html"><svg><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Users</a>
+            <a href="admin-schedules.html"><svg><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Schedules</a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="admin-settings.html" style="display: flex; align-items: center; gap: 12px; padding: 0 24px; color: var(--text-gray); font-size: 14px; font-weight: 500;"><svg width="18" style="stroke: currentColor; fill: none; stroke-width: 2;" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a>
+        </div>
+    </aside>
+
+    <div class="main-wrapper">
+        <header class="topbar">
+            <div class="breadcrumb">Admin &rsaquo; <span>Inventory</span></div>
+            <div class="topbar-right">
+                <div class="search-bar">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div style="color: var(--text-gray); cursor: pointer;">🔔</div>
+                <div class="admin-profile">
+                    <div class="admin-info">
+                        <h4>Admin User</h4><p>Super Admin</p>
+                    </div>
+                    <div class="admin-avatar"><img src="https://placehold.co/40x40/94a3b8/fff?text=AU" alt="Avatar" style="width:100%;"></div>
+                </div>
+            </div>
+        </header>
+
+        <main class="content-area">
+            <div class="page-header">
+                <div>
+                    <h1>Medicine Stock</h1>
+                    <p>Manage and track your pharmaceutical inventory across all clinics.</p>
+                </div>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-outline"><svg width="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg> Filter</button>
+                    <a href="admin-medicine-add.html" class="btn btn-primary">➕ Add Medicine</a>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medicine Name</th>
+                            <th>Category</th>
+                            <th>Stock Level</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; background: var(--light-green); color: var(--primary-green); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;">💊</div>
+                                    <div>
+                                        <h4 style="font-size: 14px; color: var(--dark-navy);">Amoxicillin 500mg</h4>
+                                        <p style="font-size: 12px; color: var(--text-gray);">SKU: AMX-500-2023</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: var(--text-gray);">Antibiotics</td>
+                            <td>
+                                <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">450 units</div>
+                                <div style="width: 100px; height: 6px; background: var(--bg-gray); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 80%; height: 100%; background: var(--primary-green);"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-active">In Stock</span></td>
+                            <td><a href="admin-medicine-edit.html" class="action-btn"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; background: #fff7ed; color: #ea580c; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;">💊</div>
+                                    <div>
+                                        <h4 style="font-size: 14px; color: var(--dark-navy);">Paracetamol 650mg</h4>
+                                        <p style="font-size: 12px; color: var(--text-gray);">SKU: PAR-650-2023</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: var(--text-gray);">Analgesics</td>
+                            <td>
+                                <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">12 units</div>
+                                <div style="width: 100px; height: 6px; background: var(--bg-gray); border-radius: 4px; overflow: hidden;">
+                                    <div style="width: 10%; height: 100%; background: #ea580c;"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge badge-warning">Low Stock</span></td>
+                            <td><a href="#" class="action-btn"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></a></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; background: #fee2e2; color: #ef4444; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px;">💊</div>
+                                    <div>
+                                        <h4 style="font-size: 14px; color: var(--dark-navy);">Insulin Glargine</h4>
+                                        <p style="font-size: 12px; color: var(--text-gray);">SKU: INS-GL-2023</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="color: var(--text-gray);">Antidiabetics</td>
+                            <td>
+                                <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">0 units</div>
+                                <div style="width: 100px; height: 6px; background: var(--bg-gray); border-radius: 4px; overflow: hidden;"></div>
+                            </td>
+                            <td><span class="badge badge-suspended">Out of Stock</span></td>
+                            <td><a href="#" class="action-btn"><svg width="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="flex-between" style="padding: 16px 24px; border-top: 1px solid var(--border);">
+                    <span style="font-size: 13px; color: var(--text-gray);">Showing 1 to 5 of 1,284 entries</span>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-outline" style="padding: 6px 12px;">Previous</button>
+                        <button class="btn btn-primary" style="padding: 6px 12px;">1</button>
+                        <button class="btn btn-outline" style="padding: 6px 12px; border: none;">2</button>
+                        <button class="btn btn-outline" style="padding: 6px 12px;">Next</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
