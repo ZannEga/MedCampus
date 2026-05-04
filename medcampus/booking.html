@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        MedCampus
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html">Home</a>
+        <a href="booking.html" class="active">Book Appointment</a>
+        <a href="history.html">Medical History</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <h1 style="margin-bottom:8px;">Create New Appointment</h1>
+    <p style="color:var(--text-gray);margin-bottom:40px;max-width:600px;">Complete your visit details below. We will help you find the best consultation schedule.</p>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:40px;">
+      <!-- LEFT -->
+      <div>
+        <h3 style="margin-bottom:16px;">1. Select Clinic</h3>
+        <div class="selection-grid" id="clinicGrid">
+          <div class="select-card active" data-clinic="General Clinic">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            <h4>General Clinic</h4>
+            <p>Consultation for general health complaints.</p>
+          </div>
+          <div class="select-card" data-clinic="Dental Clinic">
+            <svg viewBox="0 0 24 24"><path d="M12 2c-3.31 0-6 2.69-6 6 0 3.31 6 14 6 14s6-10.69 6-14c0-3.31-2.69-6-6-6zm0 8.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            <h4>Dental Clinic</h4>
+            <p>Dental health care and oral hygiene.</p>
+          </div>
+          <div class="select-card" data-clinic="Pharmacy">
+            <svg viewBox="0 0 24 24"><path d="M21 5c-1.11-.35-2.33-.5-3.5-.5-1.95 0-4.05.4-5.5 1.5-1.45-1.1-3.55-1.5-5.5-1.5S2.45 4.9 1 6v14.65c0 .25.25.5.5.5.1 0 .15-.05.25-.05C3.1 20.45 5.05 20 6.5 20c1.95 0 4.05.4 5.5 1.5 1.35-.85 3.8-1.5 5.5-1.5 1.65 0 3.35.3 4.75 1.05.1.05.15.05.25.05.25 0 .5-.25.5-.5V6c-.6-.45-1.25-.75-2-1z"/></svg>
+            <h4>Pharmacy</h4>
+            <p>Prescription collection services.</p>
+          </div>
+        </div>
+
+        
+        <h3 style="margin-bottom:16px;">2. Select Date</h3>
+        <div class="card card-shadow" style="padding:20px;margin-bottom:32px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label style="font-size:12px;font-weight:700;color:var(--text-gray);text-transform:uppercase;display:block;margin-bottom:8px;">Appointment Date</label>
+              <input type="date" id="appointmentDate" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:var(--font-main);outline:none;transition:.2s;" min="">
+            </div>
+            <div id="dateHint" style="font-size:13px;color:var(--text-gray);padding:12px;background:var(--bg-gray);border-radius:8px;line-height:1.6;">
+              📅 Select a date to see available doctors and time slots.
+            </div>
+          </div>
+        </div>
+
+<h3 style="margin-bottom:16px;">3. Select Doctor &amp; Time</h3>
+        <div class="card card-shadow">
+          <!-- Doctor selection -->
+          <div style="margin-bottom:20px;">
+            <label style="font-size:12px;font-weight:700;color:var(--text-gray);text-transform:uppercase;display:block;margin-bottom:8px;">Select Doctor</label>
+            <div id="doctorList" style="display:flex;flex-direction:column;gap:10px;"></div>
+          </div>
+          <div class="flex-between" style="margin-bottom:16px;" id="selectedDoctorInfo" style="display:none;">
+          <div class="grid-3" id="slotGrid">
+            <div class="select-card active" data-slot="09:00 - 10:00" data-avail="true" style="text-align:center;padding:12px;">
+              <h4 style="margin:0;">09:00 – 10:00</h4>
+              <p style="color:var(--primary-green);">5 Slots Left</p>
+            </div>
+            <div class="select-card" data-slot="10:00 - 11:00" data-avail="true" style="text-align:center;padding:12px;">
+              <h4 style="margin:0;">10:00 – 11:00</h4>
+              <p>2 Slots Left</p>
+            </div>
+            <div class="select-card" data-slot="14:00 - 15:00" data-avail="false" style="text-align:center;padding:12px;background:#f1f5f9;cursor:not-allowed;">
+              <h4 style="margin:0;color:var(--text-gray);">14:00 – 15:00</h4>
+              <p style="color:#ef4444;">FULL</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: SUMMARY -->
+      <div>
+        <div class="card card-shadow" style="position:sticky;top:100px;">
+          <h3 style="margin-bottom:24px;">Booking Summary</h3>
+          <div style="margin-bottom:16px;border-bottom:1px dashed var(--border);padding-bottom:16px;">
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Clinic</p>
+            <p id="summary-clinic" style="font-weight:600;">General Clinic</p>
+          </div>
+          <div style="margin-bottom:16px;border-bottom:1px dashed var(--border);padding-bottom:16px;">
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Doctor</p>
+            <p id="summary-doctor" style="font-weight:600;">— Select a doctor</p>
+          </div>
+          <div style="margin-bottom:16px;border-bottom:1px dashed var(--border);padding-bottom:16px;">
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Date &amp; Time</p>
+            <p id="summary-date" style="font-weight:600;">— Select a date</p>
+            <p id="summary-slot" style="font-size:13px;color:var(--text-gray);">09:00 – 10:00 WIB</p>
+          </div>
+          <div style="margin-bottom:24px;">
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Doctor</p>
+            <p id="summary-doctor-name" style="font-weight:600;">— Select a doctor</p>
+          </div>
+          <div class="flex-between" style="margin-bottom:12px;font-size:14px;">
+            <span style="color:var(--text-gray);">Consultation Fee</span><span>Rp 150.000</span>
+          </div>
+          <div class="flex-between" style="margin-bottom:24px;font-size:14px;">
+            <span style="color:var(--text-gray);">Administrative Fee</span><span>Rp 15.000</span>
+          </div>
+          <div class="flex-between" style="margin-bottom:24px;font-size:18px;font-weight:700;">
+            <span>Total</span><span style="color:var(--primary-green);">Rp 165.000</span>
+          </div>
+          <button class="btn btn-primary" id="btnConfirmPay" style="width:100%;">Confirm &amp; Pay →</button>
+          <p style="text-align:center;font-size:11px;color:var(--text-gray);margin-top:16px;">By continuing, you agree to MedCampus terms &amp; conditions.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    let selectedClinic = 'General Clinic';
+    let selectedSlot   = '09:00 - 10:00';
+
+    // Clinic selection
+    document.querySelectorAll('#clinicGrid .select-card').forEach(card => {
+      card.addEventListener('click', () => {
+        document.querySelectorAll('#clinicGrid .select-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedClinic = card.dataset.clinic;
+        document.getElementById('summary-clinic').textContent = selectedClinic;
+      });
+    });
+
+    // Slot selection
+    document.querySelectorAll('#slotGrid .select-card').forEach(card => {
+      card.addEventListener('click', () => {
+        if (card.dataset.avail === 'false') {
+          Toast.show('This time slot is full. Please choose another.', 'warning');
+          return;
+        }
+        document.querySelectorAll('#slotGrid .select-card').forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
+        selectedSlot = card.dataset.slot;
+        document.getElementById('summary-slot').textContent = selectedSlot + ' WIB';
+      });
+    });
+
+    // Confirm & Pay is handled by the dynamic listener below (with doctor + date)
+
+    // ── Date picker: set min = today ─────────────────────────────────────────
+    const dateInput = document.getElementById('appointmentDate');
+    const today = new Date().toISOString().slice(0,10);
+    dateInput.min = today;
+    dateInput.value = today;
+
+    // Update summary date on change
+    dateInput.addEventListener('change', () => {
+      const d = new Date(dateInput.value);
+      const formatted = d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      const summaryDate = document.getElementById('summary-date');
+      if (summaryDate) summaryDate.textContent = formatted;
+    });
+    // Trigger once for default
+    dateInput.dispatchEvent(new Event('change'));
+
+    // ── Dynamic doctor list from MOCK_USERS (Doctors only) ───────────────────
+    const doctorListEl = document.getElementById('doctorList');
+    const SPECIALTIES = {
+      'General Medicine': 'General Practitioner',
+      'Dental Clinic':    'Dental Specialist',
+      'Pharmacy':         'Pharmacist',
+      'Cardiology':       'Cardiologist',
+      'Neurology':        'Neurologist',
+      'Pediatrics':       'Pediatrician',
+    };
+    const RATINGS = ['4.7','4.8','4.9','5.0'];
+    let selectedDoctorId = null;
+
+    function renderDoctors(clinicName) {
+      const allUsers = AppData.getUsers();
+      const doctors  = allUsers.filter(u => u.role === 'Doctor' && u.status === 'active');
+      doctorListEl.innerHTML = '';
+
+      if (!doctors.length) {
+        doctorListEl.innerHTML = '<p style="color:var(--text-gray);font-size:13px;padding:12px;">No doctors available for this clinic.</p>';
+        return;
+      }
+
+      doctors.forEach((doc, i) => {
+        const spec    = SPECIALTIES[doc.department] || doc.department;
+        const rating  = RATINGS[i % RATINGS.length];
+        const isFirst = i === 0;
+        const div = document.createElement('div');
+        div.style.cssText = `display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border:1.5px solid ${isFirst?'var(--primary-green)':'var(--border)'};border-radius:10px;cursor:pointer;transition:.2s;background:${isFirst?'var(--light-green)':'var(--white)'};`;
+        div.dataset.docId   = doc.id;
+        div.dataset.docName = doc.name;
+        div.innerHTML = `
+          <div style="display:flex;gap:12px;align-items:center;">
+            <img src="${doc.avatar}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">
+            <div>
+              <h4 style="font-size:14px;margin-bottom:2px;">${doc.name}</h4>
+              <p style="font-size:12px;color:var(--text-gray);">${spec}</p>
+            </div>
+          </div>
+          <span class="badge" style="background:#fef3c7;color:#b45309;font-size:11px;">⭐ ${rating}</span>`;
+
+        div.addEventListener('click', () => {
+          doctorListEl.querySelectorAll('div').forEach(d => {
+            d.style.borderColor = 'var(--border)'; d.style.background = 'var(--white)';
+          });
+          div.style.borderColor = 'var(--primary-green)'; div.style.background = 'var(--light-green)';
+          selectedDoctorId = doc.id;
+          document.getElementById('summary-doctor').textContent = doc.name;
+          const dn = document.getElementById('summary-doctor-name');
+          if (dn) dn.textContent = doc.name;
+        });
+
+        if (isFirst) {
+          selectedDoctorId = doc.id;
+          document.getElementById('summary-doctor').textContent = doc.name;
+          const dn = document.getElementById('summary-doctor-name');
+          if (dn) dn.textContent = doc.name;
+        }
+        doctorListEl.appendChild(div);
+      });
+    }
+
+    // Re-render doctors when clinic changes
+    document.querySelectorAll('#clinicGrid .select-card').forEach(card => {
+      card.addEventListener('click', () => renderDoctors(card.dataset.clinic));
+    });
+    renderDoctors(document.querySelector('#clinicGrid .select-card')?.dataset.clinic || 'General Clinic');
+
+    // ── Override Confirm & Pay to include doctor + date ───────────────────────
+    document.getElementById('btnConfirmPay').addEventListener('click', () => {
+      const date = document.getElementById('appointmentDate').value;
+      if (!date) { Toast.show('Please select a date.', 'warning'); return; }
+      if (!selectedDoctorId) { Toast.show('Please select a doctor.', 'warning'); return; }
+
+      const doctor  = AppData.getUsers().find(u => u.id === selectedDoctorId);
+      const slotEl  = document.querySelector('#slotGrid .select-card.active');
+      const slot    = slotEl?.dataset.slot || '09:00 - 10:00';
+      const clinic  = document.querySelector('#clinicGrid .select-card.active')?.dataset.clinic || document.querySelector('#clinicGrid .select-card')?.dataset.clinic || 'Clinic';
+      const d       = new Date(date);
+      const fmtDate = d.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+      const booking = {
+        clinic, doctor: doctor?.name || 'Dr. —', specialty: doctor?.department || '—',
+        date: fmtDate, slot, fee: 'Rp 150.000', adminFee: 'Rp 15.000', total: 'Rp 165.000',
+        queueNum: 'A-' + (10 + Math.floor(Math.random()*10)),
+        appointmentId: 'MC-' + (80000 + Math.floor(Math.random()*9999))
+      };
+      AppData.setBooking(booking);
+      window.location.href = 'checkout.html';
+    }, { once: true });
+
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule - MedCampus</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          MedCampus
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search patients…">
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="doctor-dashboard.html">Dashboard</a>
+        <a href="doctor-patients.html">Today's Patients</a>
+        <a href="doctor-records.html">Medical Records</a>
+        <a href="doctor-schedule.html" class="active">Schedule</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <div class="icon-btn">🔔</div>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container">
+    <div class="flex-between" style="margin-bottom:32px;">
+      <div>
+        <h1 style="font-size:32px;margin-bottom:8px;">Schedule</h1>
+        <p style="color:var(--text-gray);font-size:15px;">Weekly clinic room assignments and consultation times.</p>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-outline" onclick="window.print()">🖨 Print</button>
+        <a href="doctor-patients.html" class="btn btn-primary">➕ New Appointment</a>
+      </div>
+    </div>
+
+    <!-- Week Navigator -->
+    <div class="flex-between" style="background:var(--white);padding:16px 24px;border-radius:12px;border:1px solid var(--border);margin-bottom:24px;">
+      <div style="font-weight:600;font-size:16px;display:flex;align-items:center;gap:16px;">
+        <span id="prevWeek" style="cursor:pointer;color:var(--text-gray);font-size:20px;user-select:none;">&lt;</span>
+        <span id="weekLabel"></span>
+        <span id="nextWeek" style="cursor:pointer;color:var(--text-gray);font-size:20px;user-select:none;">&gt;</span>
+      </div>
+      <div style="background:var(--bg-gray);padding:4px;border-radius:8px;display:flex;gap:4px;">
+        <button class="btn btn-outline" style="border:none;background:var(--white);box-shadow:0 1px 2px rgba(0,0,0,0.05);">Weekly</button>
+        <button class="btn btn-outline" style="border:none;background:transparent;color:var(--text-gray);">Monthly</button>
+      </div>
+    </div>
+
+    <!-- Schedule Grid -->
+    <div class="schedule-wrapper">
+      <div class="schedule-grid">
+        <!-- Header -->
+        <div class="schedule-header">TIME</div>
+        <div class="schedule-header">MON <br><span style="font-size:16px;color:var(--dark-navy);">21</span></div>
+        <div class="schedule-header">TUE <br><span style="font-size:16px;color:var(--dark-navy);">22</span></div>
+        <div class="schedule-header" style="color:var(--primary-green);">WED (TODAY)<br><span style="font-size:16px;">23</span></div>
+        <div class="schedule-header">THU <br><span style="font-size:16px;color:var(--dark-navy);">24</span></div>
+        <div class="schedule-header">FRI <br><span style="font-size:16px;color:var(--dark-navy);">25</span></div>
+
+        <!-- 08:00 AM -->
+        <div class="schedule-time">08:00<br>AM</div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room A</h4><p>General Checkup</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room B</h4><p>Consultation</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block"><h4>Room A</h4><p>Morning Rounds</p></div></div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room C</h4><p>Surgery Prep</p></div></div>
+
+        <!-- 10:00 AM -->
+        <div class="schedule-time">10:00<br>AM</div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room B</h4><p>Follow-up (4)</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block"><h4>Room B</h4><p>Urgent Care</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room C</h4><p>Specialized Surgery</p></div></div>
+        <div class="schedule-cell"></div>
+
+        <!-- Lunch -->
+        <div class="lunch-break">🍴 LUNCH BREAK</div>
+
+        <!-- 02:00 PM -->
+        <div class="schedule-time">02:00<br>PM</div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room A</h4><p>Consultation</p></div></div>
+        <div class="schedule-cell"></div>
+        <div class="schedule-cell"><div class="schedule-block"><h4>Room C</h4><p>Telehealth Session</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room A</h4><p>Review Board</p></div></div>
+        <div class="schedule-cell"><div class="schedule-block disabled"><h4>Room B</h4><p>Weekly Summary</p></div></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="doctor.js"></script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

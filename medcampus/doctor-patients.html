@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Patients - MedCampus</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<style>
+  .btn-filter-active {
+    border-color: var(--primary-green) !important;
+    color: var(--primary-green) !important;
+    background: var(--light-green) !important;
+    font-weight: 600;
+  }
+</style>
+<link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          MedCampus
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search patients…">
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="doctor-dashboard.html">Dashboard</a>
+        <a href="doctor-patients.html" class="active">Today's Patients</a>
+        <a href="doctor-records.html">Medical Records</a>
+        <a href="doctor-schedule.html">Schedule</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <div class="icon-btn">🔔</div>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container">
+    <div class="flex-between" style="margin-bottom:32px;align-items:flex-end;">
+      <div>
+        <h1 style="font-size:32px;margin-bottom:8px;">Today's Patients</h1>
+        <p style="color:var(--text-gray);font-size:14px;" id="patients-date-line"><span id="patients-today-date"></span> • <span style="color:var(--primary-green);font-weight:600;" id="remaining-count"></span></p>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="btn btn-outline btn-filter-active" data-filter="queue">In Queue</button>
+        <button class="btn btn-outline" data-filter="done">Completed</button>
+        <button class="btn btn-outline" data-filter="all">All Appointments</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden;margin-bottom:40px;">
+      <div class="table-container">
+        <table id="patientTable">
+          <thead>
+            <tr><th>Queue No.</th><th>Patient Name</th><th>Time</th><th>Visit Type</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="patientTbody"></tbody>
+        </table>
+      </div>
+      <div class="flex-between" style="padding:16px 24px;border-top:1px solid var(--border);font-size:13px;color:var(--text-gray);">
+        <span>Showing <strong id="showing-count">0</strong> of <strong>12</strong> remaining patients</span>
+        <div style="display:flex;gap:8px;" id="paginationBtns"></div>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card stat-card" style="background:var(--light-green);border:none;">
+        <div class="stat-header">
+          <span class="stat-title" style="color:var(--primary-green);">Patients Completed</span>
+          <div style="color:var(--primary-green);">👥</div>
+        </div>
+        <div>
+          <div class="stat-value" style="color:var(--primary-green);">08</div>
+          <div class="stat-desc" style="color:var(--primary-green);opacity:0.8;text-transform:uppercase;font-size:11px;font-weight:700;">Target: 20 per day</div>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Avg. Wait Time</span>
+          <div class="stat-icon" style="background:#f1f5f9;color:var(--text-gray);">⏱</div>
+        </div>
+        <div>
+          <div class="stat-value">14m</div>
+          <div class="stat-desc">⬇ 2m from yesterday</div>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Clinical Notes</span>
+          <div class="stat-icon" style="background:#f1f5f9;color:var(--text-gray);">📝</div>
+        </div>
+        <div>
+          <div class="stat-value">92%</div>
+          <div class="stat-desc">Sync Status: Active</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="doctor.js"></script>
+  <script>
+    const statusBadge = {
+      'waiting':     '<span class="badge badge-waiting">Waiting</span>',
+      'in-progress': '<span class="badge badge-consultation">In Progress</span>',
+      'completed':   '<span class="badge badge-completed">Completed</span>',
+    };
+    const typeBadge = {
+      'Follow-up':    '<span class="badge badge-followup" style="background:transparent;border:1px solid #4f46e5;">Follow-up</span>',
+      'Consultation': '<span class="badge" style="color:#9333ea;border:1px solid #9333ea;">Consultation</span>',
+      'Urgent Visit': '<span class="badge badge-urgent" style="background:transparent;border:1px solid #ef4444;">Urgent Visit</span>',
+    };
+
+    function actionBtn(p) {
+      if (p.status === 'in-progress') {
+        return `<button class="btn btn-outline" style="border-color:var(--primary-green);color:var(--primary-green);" data-patient-id="${p.id}" data-action="resume">Resume</button>`;
+      } else if (p.status === 'completed') {
+        return `<a href="doctor-records.html" class="btn btn-outline">View Record</a>`;
+      }
+      return `<button class="btn btn-primary" data-patient-id="${p.id}" data-action="start-exam">Start Exam</button>`;
+    }
+
+    function renderPatients(patients) {
+      const tbody = document.getElementById('patientTbody');
+      tbody.innerHTML = '';
+      patients.forEach(p => {
+        const tr = document.createElement('tr');
+        if (p.status === 'in-progress') tr.style.background = '#f8fafc';
+        tr.innerHTML = `
+          <td><span class="queue-badge">${p.queue}</span></td>
+          <td>
+            <div class="patient-cell">
+              <div class="patient-avatar">👤</div>
+              <div class="patient-info"><h4>${p.name}</h4><p>${p.gender}, ${p.age} yrs</p></div>
+            </div>
+          </td>
+          <td>${p.time}</td>
+          <td>${typeBadge[p.type] || p.type}</td>
+          <td>${statusBadge[p.status] || p.status}</td>
+          <td>${actionBtn(p)}</td>`;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('showing-count').textContent = patients.length;
+
+      // Wire action buttons
+      tbody.querySelectorAll('[data-action="start-exam"], [data-action="resume"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const patient = MOCK_PATIENTS.find(p => p.id === btn.dataset.patientId);
+          if (patient) AppData.setPatient(patient);
+          Toast.show(`Opening session for ${patient?.name || 'patient'}…`, 'info');
+          setTimeout(() => { sessionStorage.setItem('mc_entry_origin','doctor-patients.html'); window.location.href = 'doctor-new-entry.html'; }, 800);
+        });
+      });
+    }
+
+    // Filter tabs
+    document.querySelectorAll('[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active from all
+        document.querySelectorAll('[data-filter]').forEach(b => {
+          b.classList.remove('btn-filter-active');
+        });
+        // Set active on clicked
+        btn.classList.add('btn-filter-active');
+        const f = btn.dataset.filter;
+        const filtered = f === 'all' ? MOCK_PATIENTS
+          : f === 'queue' ? MOCK_PATIENTS.filter(p => p.status === 'waiting' || p.status === 'in-progress')
+          : MOCK_PATIENTS.filter(p => p.status === 'completed');
+        renderPatients(filtered);
+      });
+    });
+
+    // Search
+    document.querySelector('.search-bar input').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      const filtered = MOCK_PATIENTS.filter(p => p.name.toLowerCase().includes(q) || p.queue.toLowerCase().includes(q));
+      renderPatients(filtered);
+    });
+
+    
+    // ── Functional pagination ─────────────────────────────────────────────────
+    const PAGE_SIZE = 3;
+    let currentPage = 1;
+    let currentList = MOCK_PATIENTS;
+
+    const origRender = renderPatients;
+    function renderPage(list, page) {
+      currentList = list;
+      currentPage = page;
+      const start  = (page - 1) * PAGE_SIZE;
+      origRender(list.slice(start, start + PAGE_SIZE));
+      // Update count
+      document.getElementById('showing-count').textContent = Math.min(PAGE_SIZE, list.length - start);
+      // Render pagination
+      const total = Math.ceil(list.length / PAGE_SIZE);
+      const btns  = document.getElementById('paginationBtns');
+      btns.innerHTML = '';
+      const mk = (label, pg, disabled) => {
+        const b = document.createElement('button');
+        b.className = 'icon-btn';
+        b.style.cssText = `border-radius:4px;${pg === currentPage ? 'background:var(--primary-green);color:white;border-color:var(--primary-green);' : ''}`;
+        b.textContent = label; b.disabled = disabled;
+        b.addEventListener('click', () => renderPage(currentList, pg));
+        btns.appendChild(b);
+      };
+      mk('<', page - 1, page <= 1);
+      for (let i = 1; i <= total; i++) mk(i, i, false);
+      mk('>', page + 1, page >= total);
+    }
+
+    // Override renderPatients to use pagination
+    window.renderPatients = function(list) { renderPage(list, 1); };
+    renderPage(MOCK_PATIENTS, 1);
+    const rc = document.getElementById('remaining-count');
+    if (rc) rc.textContent = MOCK_PATIENTS.filter(p => p.status === 'waiting' || p.status === 'in-progress').length + ' patients remaining';
+
+  </script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

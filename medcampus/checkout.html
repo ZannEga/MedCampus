@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Checkout - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">MedCampus</div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <h1 style="margin-bottom:8px;">Payment Checkout</h1>
+    <p style="color:var(--text-gray);margin-bottom:40px;">Review your appointment details and complete the payment to secure your slot.</p>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:40px;">
+      <!-- LEFT -->
+      <div>
+        <h3 style="margin-bottom:16px;">Appointment Summary</h3>
+        <div class="card card-shadow grid-2">
+          <div>
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Clinic &amp; Service</p>
+            <p id="co-clinic" style="font-weight:600;font-size:16px;">—</p>
+            <p id="co-specialty" style="font-size:13px;color:var(--text-gray);margin-bottom:16px;">—</p>
+            <div style="display:flex;gap:12px;align-items:center;background:var(--bg-gray);padding:12px;border-radius:8px;">
+              <div style="width:40px;height:40px;background:#cbd5e1;border-radius:50%;flex-shrink:0;"></div>
+              <div>
+                <h4 id="co-doctor" style="font-size:14px;">—</h4>
+                <p id="co-doctor-spec" style="font-size:12px;color:var(--primary-green);">—</p>
+              </div>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:11px;color:var(--text-gray);font-weight:700;text-transform:uppercase;">Schedule</p>
+            <p id="co-date" style="font-weight:600;font-size:16px;">—</p>
+            <p id="co-slot" style="font-size:13px;color:var(--text-gray);margin-bottom:16px;">—</p>
+            <div style="background:#eff6ff;color:#1d4ed8;padding:12px;border-radius:8px;font-size:12px;">
+              ⏱ Arrival at least 15 mins before schedule is recommended.
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-top:32px;margin-bottom:16px;">Select Payment Method</h3>
+        <div class="card card-shadow">
+          <div class="payment-card active">
+            <div style="display:flex;gap:16px;align-items:center;">
+              <div style="width:20px;height:20px;border-radius:50%;border:6px solid var(--primary-green);background:white;flex-shrink:0;" data-radio="true""></div>
+              <div>
+                <h4 style="font-size:15px;">Student ID Balance</h4>
+                <p style="font-size:12px;color:var(--text-gray);">Fast &amp; direct deduction from your campus account</p>
+              </div>
+            </div>
+            <h4 style="color:var(--primary-green);">Rp 450.000</h4>
+          </div>
+          <div class="payment-card">
+            <div style="display:flex;gap:16px;align-items:center;">
+              <div style="width:20px;height:20px;border-radius:50%;border:2px solid var(--text-gray);flex-shrink:0;" data-radio="true""></div>
+              <div>
+                <h4 style="font-size:15px;">Virtual Account (VA)</h4>
+                <p style="font-size:12px;color:var(--text-gray);">BCA, Mandiri, BNI, or BRI</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: BILL -->
+      <div>
+        <div class="card card-shadow">
+          <h3 style="margin-bottom:24px;">Bill Breakdown</h3>
+          <div class="flex-between" style="margin-bottom:16px;font-size:14px;">
+            <span style="color:var(--text-gray);">Consultation Fee</span>
+            <span id="co-fee">—</span>
+          </div>
+          <div class="flex-between" style="margin-bottom:24px;font-size:14px;border-bottom:1px dashed var(--border);padding-bottom:24px;">
+            <span style="color:var(--text-gray);">Service Fee</span>
+            <span id="co-admin-fee">—</span>
+          </div>
+          <div class="flex-between" style="margin-bottom:24px;font-size:18px;font-weight:700;">
+            <span>Total Amount</span>
+            <span id="co-total" style="color:var(--primary-green);">—</span>
+          </div>
+          <button class="btn btn-primary" id="btnPay" style="width:100%;text-align:center;">Confirm &amp; Pay →</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    // ── Payment card selection (re-init here to ensure DOM is ready) ───────────
+    document.querySelectorAll('.payment-card').forEach(card => {
+      card.addEventListener('click', () => {
+        // Remove active from all cards
+        document.querySelectorAll('.payment-card').forEach(c => {
+          c.classList.remove('active');
+          // Reset radio circle to unselected style
+          const circle = c.querySelector('[data-radio]');
+          if (circle) {
+            circle.style.border = '2px solid var(--text-gray)';
+          }
+        });
+        // Set active on clicked card
+        card.classList.add('active');
+        // Update radio circle to selected style
+        const circle = card.querySelector('[data-radio]');
+        if (circle) {
+          circle.style.border = '6px solid var(--primary-green)';
+        }
+      });
+    });
+
+    const booking = AppData.getBooking();
+
+    if (!booking) {
+      Toast.show('No booking data found. Redirecting…', 'error');
+      setTimeout(() => { window.location.href = 'booking.html'; }, 1500);
+    } else {
+      document.getElementById('co-clinic').textContent      = booking.clinic;
+      document.getElementById('co-specialty').textContent   = booking.specialty || 'Consultation';
+      document.getElementById('co-doctor').textContent      = booking.doctor;
+      document.getElementById('co-doctor-spec').textContent = booking.specialty;
+      document.getElementById('co-date').textContent        = booking.date;
+      document.getElementById('co-slot').textContent        = booking.slot + ' WIB';
+      document.getElementById('co-fee').textContent         = booking.fee;
+      document.getElementById('co-admin-fee').textContent   = booking.adminFee;
+      document.getElementById('co-total').textContent       = booking.total;
+    }
+
+    document.getElementById('btnPay').addEventListener('click', () => {
+      const active = document.querySelector('.payment-card.active');
+      if (!active) { Toast.show('Please select a payment method.', 'warning'); return; }
+      const btn = document.getElementById('btnPay');
+      btn.textContent = 'Processing…';
+      btn.disabled = true;
+      // Save the queue that success.html and ticket.html will read
+      AppData.setQueue({
+        number:        booking.queueNum,
+        appointmentId: booking.appointmentId,
+        clinic:        booking.clinic,
+        doctor:        booking.doctor,
+        specialty:     booking.specialty,
+        date:          booking.date,
+        time:          booking.slot,
+        estimatedTime: booking.slot.split(' - ')[0],
+        status:        'Waiting',
+        progress:      0,
+        aheadCount:    5,
+        patientName:   AppData.getSession()?.name || 'Patient',
+        patientId:     '12345678',
+        clinic_address:'Jl. Mulyorejo Utara No. 201',
+        fee:           booking.total
+      });
+      setTimeout(() => { window.location.href = 'success.html'; }, 1200);
+    });
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

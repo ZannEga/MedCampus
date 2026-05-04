@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queue Details - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        MedCampus
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" class="active">Home</a>
+        <a href="booking.html">Book Appointment</a>
+        <a href="history.html">Medical History</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <a href="dashboard.html" style="color:var(--text-gray);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;">
+      ← Back to Dashboard
+    </a>
+
+    <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:32px;">
+
+      <!-- LEFT: LIVE TICKET -->
+      <div>
+        <div class="card card-shadow" style="border-top:6px solid var(--primary-green);padding:32px;margin-bottom:24px;">
+          <div class="flex-between" style="align-items:flex-start;">
+            <div>
+              <p style="font-size:11px;font-weight:700;color:var(--primary-green);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">Your Current Ticket</p>
+              <p id="qd-name" style="font-size:14px;color:var(--text-gray);font-weight:500;margin-bottom:4px;">—</p>
+              <h1 id="qd-queue-num" style="font-size:56px;line-height:1;color:var(--dark-navy);margin-bottom:12px;">—</h1>
+              <p style="color:var(--text-gray);font-size:15px;">Please wait for your number to be called.</p>
+            </div>
+            <div style="background:var(--bg-gray);padding:16px;border-radius:12px;text-align:center;border:1px solid var(--border);">
+              <div id="qr-canvas" style="width:80px;height:80px;background:white;margin:0 auto 8px;"></div>
+              <span style="font-size:9px;font-weight:700;color:var(--text-gray);letter-spacing:1px;">SCAN FOR CHECK-IN</span>
+            </div>
+          </div>
+
+          <hr style="border:none;border-bottom:1px solid var(--border);margin:32px 0;">
+
+          <div>
+            <div class="flex-between" style="margin-bottom:8px;">
+              <h3 style="display:flex;align-items:center;gap:8px;font-size:18px;">
+                <span style="color:var(--primary-green);">👥</span>
+                <span class="queue-ahead-count">— people ahead of you</span>
+              </h3>
+              <span style="font-size:13px;font-weight:600;color:var(--primary-green);" id="progressLabel">—% Complete</span>
+            </div>
+            <div class="progress-container">
+              <div class="progress-fill" style="width:0%;"></div>
+            </div>
+            <p style="font-size:13px;color:var(--text-gray);margin-top:12px;display:flex;align-items:center;gap:6px;">
+              <span>ⓘ</span> You are almost next. Please stay near the waiting area.
+            </p>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:16px;">
+          <button class="btn btn-primary" id="btnDownloadTicket" style="flex:1;font-size:15px;">📥 Download Ticket</button>
+          <button onclick="openCancelModal()" class="btn btn-outline" style="flex:1;background:var(--bg-gray);border:1px solid var(--border);font-size:15px;">⊗ Cancel Appointment</button>
+        </div>
+      </div>
+
+      <!-- RIGHT: DETAILS -->
+      <div>
+        <div class="card card-shadow" style="padding:32px;">
+          <h2 style="font-size:20px;margin-bottom:32px;">Appointment Details</h2>
+
+          <div class="detail-item">
+            <div class="detail-icon">🏥</div>
+            <div>
+              <p style="font-size:13px;color:var(--text-gray);margin-bottom:2px;">Clinic</p>
+              <p id="qd-clinic" style="font-weight:600;font-size:15px;">—</p>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">👨‍⚕️</div>
+            <div>
+              <p style="font-size:13px;color:var(--text-gray);margin-bottom:2px;">Doctor</p>
+              <p id="qd-doctor" style="font-weight:600;font-size:15px;">—</p>
+              <p id="qd-specialty" style="font-size:12px;color:var(--text-gray);">—</p>
+            </div>
+          </div>
+
+          <div class="detail-item">
+            <div class="detail-icon">🕒</div>
+            <div>
+              <p style="font-size:13px;color:var(--text-gray);margin-bottom:2px;">Estimated Service Time</p>
+              <p id="qd-est-time" style="font-weight:600;font-size:15px;">—</p>
+            </div>
+          </div>
+
+          <div class="detail-item" style="margin-bottom:32px;">
+            <div class="detail-icon" style="background:#fef3c7;color:#d97706;">💬</div>
+            <div>
+              <p style="font-size:13px;color:var(--text-gray);margin-bottom:2px;">Status</p>
+              <p style="font-weight:600;font-size:15px;">
+                <span class="status-dot"></span><span id="qd-status">—</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="instruction-box">
+            <h4 style="font-size:14px;margin-bottom:8px;display:flex;align-items:center;gap:8px;">
+              <span style="color:var(--primary-green);">🔔</span> Instructions
+            </h4>
+            <p style="font-size:13px;color:var(--text-gray);line-height:1.6;">
+              Please arrive 10 minutes early. Have your health card and identification ready for verification at the reception desk.
+            </p>
+          </div>
+
+          <div style="border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+            <div style="height:120px;background-color:#84b7af;background-image:url('https://placehold.co/400x120/84b7af/ffffff?text=Clinic+Map+Area');background-size:cover;background-position:center;"></div>
+            <div class="flex-between" style="padding:12px 16px;background:white;">
+              <span id="qd-address" style="font-size:12px;color:var(--text-gray);">—</span>
+              <a href="https://maps.google.com/?q=Jl.+Mulyorejo+Utara+No.+201" target="_blank" rel="noopener" style="font-size:12px;font-weight:600;color:var(--primary-green);">Open in Maps ↗</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <span>© 2026 MedCampus Patient Portal. All rights reserved.</span>
+      <div style="display:flex;gap:24px;">
+        <a href="javascript:void(0)" onclick="Toast.show('Privacy Policy is not available in the demo.', 'info')">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="Toast.show('Terms of Service is not available in the demo.', 'info')">Terms of Service</a>
+        <a href="javascript:void(0)" onclick="Toast.show('Help Center is not available in the demo.', 'info')">Help Center</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        <h2 style="font-size:18px;color:var(--dark-navy);">Cancel Appointment</h2>
+      </div>
+      <p style="color:var(--text-gray);font-size:14px;margin-bottom:24px;line-height:1.6;">
+        Are you sure? Your queue position (<span id="qd-cancel-num">—</span>) will be lost.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button onclick="confirmCancel()" class="btn-danger">Yes, Cancel</button>
+        <button onclick="closeCancelModal()" class="btn btn-outline" style="color:var(--primary-green);border-color:var(--border);width:100%;">No, Keep Appointment</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    const q = AppData.getQueue();
+
+    // Populate all fields from stored queue data
+    document.getElementById('qd-name').textContent      = q.patientName + ' ⌄';
+    document.getElementById('qd-queue-num').textContent = q.number;
+    document.getElementById('qd-clinic').textContent    = q.clinic;
+    document.getElementById('qd-doctor').textContent    = q.doctor;
+    document.getElementById('qd-specialty').textContent = q.specialty;
+    document.getElementById('qd-est-time').textContent  = 'Today, ' + q.estimatedTime;
+    document.getElementById('qd-status').textContent    = q.status;
+    document.getElementById('qd-address').textContent   = q.clinic_address;
+    document.getElementById('qd-cancel-num').textContent = q.number;
+    document.getElementById('progressLabel').textContent = q.progress + '% Complete';
+    document.querySelector('.queue-ahead-count').textContent = q.aheadCount + ' ' + (q.aheadCount === 1 ? 'person' : 'people') + ' ahead of you';
+
+    // Animate progress bar
+    requestAnimationFrame(() => {
+      document.querySelector('.progress-fill').style.width = q.progress + '%';
+    });
+
+    // Download ticket — save queue then go to ticket page
+    document.getElementById('btnDownloadTicket').addEventListener('click', () => {
+      AppData.setQueue(q);
+      window.location.href = 'ticket.html';
+    });
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // Generate real QR code
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const el = document.getElementById('qr-canvas');
+        if (el && window.QRCode) {
+          const data = "MC-" + (AppData.getQueue()?.appointmentId || "MC-88291");
+          new QRCode(el, { text: data, width: el.offsetWidth || 100, height: el.offsetHeight || 100, colorDark:'#151e2d', colorLight:'#ffffff' });
+        }
+      }, 300);
+    });
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

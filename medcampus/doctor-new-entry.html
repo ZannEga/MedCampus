@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Medical Entry - MedCampus</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          MedCampus
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search patients…">
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="doctor-dashboard.html">Dashboard</a>
+        <a href="doctor-patients.html" class="active">Today's Patients</a>
+        <a href="doctor-records.html">Medical Records</a>
+        <a href="doctor-schedule.html">Schedule</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <div class="icon-btn">🔔</div>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container" style="max-width:900px;">
+    <div class="flex-between" style="margin-bottom:32px;">
+      <div>
+        <h1 style="font-size:28px;margin-bottom:8px;">
+          New Medical Entry — <span id="entry-patient-name" style="color:var(--primary-green);">Patient</span>
+        </h1>
+        <p style="color:var(--text-gray);font-size:13px;display:flex;gap:16px;">
+          <span>Queue: <strong id="entry-queue">—</strong></span>
+          <span id="entry-meta">—</span>
+          <span>📅 Today, <span id="entry-today"></span></span>
+        </p>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <a href="doctor-patients.html" class="btn btn-outline" id="btnCancelEntry">← Back</a>
+        <button class="btn btn-primary" data-action="save-draft">💾 Save Draft</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:40px;">
+      <form id="newEntryForm" novalidate>
+
+        <!-- 1. Vitals -->
+        <div class="form-section">
+          <h2 class="form-section-title"><span style="color:var(--primary-green);">📈</span> 1. Patient Vitals</h2>
+          <div class="grid-3">
+            <div class="form-group">
+              <label class="form-label">Blood Pressure (mmHg)</label>
+              <div class="input-with-suffix">
+                <input type="text" class="form-input" placeholder="e.g. 120/80">
+                <span class="suffix-text">mmHg</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Heart Rate (bpm)</label>
+              <div class="input-with-suffix">
+                <input type="text" class="form-input" placeholder="e.g. 72">
+                <span class="suffix-text">bpm</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Temperature (°C)</label>
+              <div class="input-with-suffix">
+                <input type="text" class="form-input" placeholder="e.g. 36.6">
+                <span class="suffix-text">°C</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Diagnosis -->
+        <div class="form-section">
+          <h2 class="form-section-title"><span style="color:var(--primary-green);">🩺</span> 2. Diagnosis &amp; Symptoms</h2>
+          <div class="form-group">
+            <label class="form-label">Presenting Symptoms</label>
+            <textarea class="form-textarea" placeholder="Describe symptoms reported by patient…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Primary Diagnosis <span style="color:#ef4444;">*</span></label>
+            <input type="text" class="form-input" name="diagnosis" placeholder="Enter ICD-10 or clinical diagnosis" required>
+          </div>
+        </div>
+
+        <!-- 3. Prescription -->
+        <div class="form-section">
+          <div class="flex-between" style="margin-bottom:20px;">
+            <h2 class="form-section-title" style="margin-bottom:0;"><span style="color:var(--primary-green);">💊</span> 3. Prescription</h2>
+            <span style="color:var(--primary-green);font-size:13px;font-weight:600;cursor:pointer;" data-action="add-med">⊕ Add Medication</span>
+          </div>
+          <div style="display:grid;grid-template-columns:2fr 1fr 2fr 40px;gap:16px;margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;">
+            <span>Medication Name</span><span>Dosage</span><span>Frequency</span><span></span>
+          </div>
+          <div id="prescriptionRows">
+            <div class="prescription-row" style="display:grid;grid-template-columns:2fr 1fr 2fr 40px;gap:16px;margin-bottom:16px;align-items:center;">
+              <input type="text" class="form-input" placeholder="Medicine name…">
+              <input type="text" class="form-input" placeholder="e.g. 500mg">
+              <input type="text" class="form-input" placeholder="e.g. Once daily">
+              <div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Clinical Notes -->
+        <div class="form-section" style="margin-bottom:0;">
+          <h2 class="form-section-title"><span style="color:var(--primary-green);">📝</span> 4. Clinical Notes</h2>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="form-label">Detailed Observations</label>
+            <textarea class="form-textarea" placeholder="Enter detailed findings, recommendations, or patient history updates…" style="min-height:150px;"></textarea>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);margin-top:40px;padding-top:32px;display:flex;justify-content:flex-end;gap:16px;align-items:center;">
+          <span style="color:var(--text-gray);font-size:14px;cursor:pointer;margin-right:auto;" data-action="discard">Discard Draft</span>
+          <button type="button" class="btn btn-outline">Save as Template</button>
+          <button type="submit" class="btn btn-primary">Finalize &amp; Submit Entry</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer style="text-align:center;padding:24px 0 40px;color:var(--text-gray);font-size:12px;">
+    © 2026 MedCampus Portal. HIPAA Compliant Environment.
+  </footer>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="doctor.js"></script>
+  <script>
+
+    // ── Dynamic back navigation based on origin ────────────────────────────────
+    const entryOrigin = sessionStorage.getItem('mc_entry_origin') || 'doctor-patients.html';
+    const backBtn = document.getElementById('btnCancelEntry');
+    if (backBtn) backBtn.href = entryOrigin;
+
+    // Update active nav link based on origin
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    const originLink = document.querySelector(`.nav-links a[href="${entryOrigin}"]`);
+    if (originLink) originLink.classList.add('active');
+
+    // Populate patient info from localStorage
+    const patient = AppData.getPatient();
+    const today   = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    document.getElementById('entry-today').textContent = today;
+
+    if (patient) {
+      document.getElementById('entry-patient-name').textContent = patient.name;
+      document.getElementById('entry-queue').textContent        = patient.queue;
+      document.getElementById('entry-meta').textContent         = `${patient.gender}, ${patient.age} yrs • ${patient.type}`;
+    }
+
+    // Delete row
+    document.querySelectorAll('.delete-row').forEach(btn => {
+      btn.addEventListener('click', () => btn.closest('.prescription-row').remove());
+    });
+
+    // Add medication row
+    document.querySelector('[data-action="add-med"]').addEventListener('click', () => {
+      const row = document.createElement('div');
+      row.className = 'prescription-row';
+      row.style.cssText = 'display:grid;grid-template-columns:2fr 1fr 2fr 40px;gap:16px;margin-bottom:16px;align-items:center;';
+      row.innerHTML = `
+        <input type="text" class="form-input" placeholder="Medicine name…">
+        <input type="text" class="form-input" placeholder="e.g. 5ml">
+        <input type="text" class="form-input" placeholder="e.g. Once daily">
+        <button type="button" class="icon-btn delete-row" style="color:#ef4444;border:none;background:#fee2e2;">🗑</button>`;
+      row.querySelector('.delete-row').addEventListener('click', () => row.remove());
+      document.getElementById('prescriptionRows').appendChild(row);
+    });
+
+    // Form submit
+    document.getElementById('newEntryForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const diagnosis = document.querySelector('[name="diagnosis"]').value;
+      if (!diagnosis.trim()) {
+        Toast.show('Please enter a primary diagnosis.', 'error');
+        return;
+      }
+      const btn = e.target.querySelector('[type="submit"]');
+      btn.textContent = 'Saving…'; btn.disabled = true;
+      Toast.show('Medical record saved successfully!', 'success');
+      setTimeout(() => { window.location.href = 'doctor-records.html'; }, 1200);
+    });
+
+    // Save draft
+    document.querySelector('[data-action="save-draft"]').addEventListener('click', () => {
+      Toast.show('Draft saved.', 'info');
+    });
+
+    // Discard
+    document.querySelector('[data-action="discard"]').addEventListener('click', () => {
+      if (confirm('Discard all changes?')) window.location.href = sessionStorage.getItem('mc_entry_origin') || 'doctor-patients.html';
+    });
+  </script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

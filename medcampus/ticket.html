@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Ticket - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body style="background:#f1f5f9;padding:40px 0;">
+  <div class="container" style="max-width:800px;margin-bottom:24px;display:flex;justify-content:space-between;">
+    <button id="btnTicketBack" class="btn btn-outline" style="background:white;border:1px solid var(--border);">← Go Back</button>
+    <button class="btn btn-primary" onclick="window.print()">🖨 Print Ticket</button>
+    </div>
+
+  <div class="container" style="max-width:800px;background:white;border-radius:16px;overflow:hidden;box-shadow:0 20px 25px -5px rgba(0,0,0,0.1);padding:0;">
+    <div class="ticket-head">
+      <div>
+        <h3>MedCampus</h3>
+        <p style="font-size:14px;opacity:0.9;">Official Appointment Digital Ticket</p>
+      </div>
+      <div style="text-align:right;">
+        <p style="font-size:12px;font-weight:700;letter-spacing:1px;">QUEUE NUMBER</p>
+        <h2 id="tk-queue-num" style="font-size:36px;">—</h2>
+      </div>
+    </div>
+
+    <div style="padding:40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+      <!-- QR Area -->
+      <div style="text-align:center;border-right:1px dashed var(--border);padding-right:40px;">
+        <div style="width:200px;height:200px;background:#fed7aa;margin:0 auto 24px;display:flex;justify-content:center;align-items:center;border-radius:12px;">
+          <div style="width:120px;height:120px;background:white;border:none;display:flex;align-items:center;justify-content:center;"><div id="qr-canvas"></div></div>
+        </div>
+        <p style="font-size:13px;color:var(--text-gray);">Scan at clinic reception</p>
+        <h3 id="tk-appt-id" style="color:var(--primary-green);margin-top:8px;">—</h3>
+      </div>
+
+      <!-- Info Area -->
+      <div style="padding-left:20px;">
+        <h3 style="margin-bottom:24px;">Patient &amp; Appointment Information</h3>
+        <div class="flex-between" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Patient Name</span>
+          <span id="tk-patient-name" style="font-weight:600;">—</span>
+        </div>
+        <div class="flex-between" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Student ID (NIM)</span>
+          <span id="tk-patient-id" style="font-weight:600;">—</span>
+        </div>
+        <div class="flex-between" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Clinic</span>
+          <span id="tk-clinic" style="font-weight:600;color:var(--primary-green);">—</span>
+        </div>
+        <div class="flex-between" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Attending Doctor</span>
+          <span id="tk-doctor" style="font-weight:600;">—</span>
+        </div>
+        <div class="flex-between" style="border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Date</span>
+          <span id="tk-date" style="font-weight:600;">—</span>
+        </div>
+        <div class="flex-between" style="padding-bottom:12px;">
+          <span style="color:var(--text-gray);font-size:14px;">Scheduled Time</span>
+          <span id="tk-time" style="font-weight:600;">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:var(--bg-gray);padding:24px 40px;border-top:1px solid var(--border);">
+      <h4 style="margin-bottom:8px;color:var(--dark-navy);">ⓘ Important Instructions:</h4>
+      <ul style="font-size:13px;color:var(--text-gray);padding-left:20px;list-style-type:disc;">
+        <li style="margin-bottom:4px;">Please arrive at the clinic at least 10 minutes before your scheduled time.</li>
+        <li style="margin-bottom:4px;">Present this digital ticket or a printed copy at the reception counter.</li>
+        <li>Ensure you have your Student ID (KTM) ready for verification.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    const q = AppData.getQueue();
+    document.getElementById('tk-queue-num').textContent   = q.number;
+    document.getElementById('tk-appt-id').textContent     = '#' + q.appointmentId;
+    document.getElementById('tk-patient-name').textContent = q.patientName;
+    document.getElementById('tk-patient-id').textContent  = q.patientId;
+    document.getElementById('tk-clinic').textContent      = q.clinic;
+    document.getElementById('tk-doctor').textContent      = q.doctor;
+    document.getElementById('tk-date').textContent        = q.date;
+    document.getElementById('tk-time').textContent        = q.estimatedTime;
+  </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script>
+    // Generate real QR code
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const el = document.getElementById('qr-canvas');
+        if (el && window.QRCode) {
+          const data = "MC-" + (document.getElementById("tk-appt-id")?.textContent || "MC-88291");
+          new QRCode(el, { text: data, width: el.offsetWidth || 100, height: el.offsetHeight || 100, colorDark:'#151e2d', colorLight:'#ffffff' });
+        }
+      }, 300);
+    });
+  </script>
+<script>
+  document.getElementById("btnTicketBack")?.addEventListener("click", () => history.back());
+</script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

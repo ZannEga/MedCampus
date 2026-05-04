@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedules - MedCampus Admin</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<link rel="stylesheet" href="admin.css">
+  <style>
+    .action-menu{position:relative;display:inline-block}
+    .action-menu-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:16px;color:var(--text-gray);transition:.2s}
+    .action-menu-btn:hover{background:var(--bg-gray)}
+    .action-dropdown{position:absolute;right:0;top:calc(100% + 6px);background:var(--white);border:1px solid var(--border);border-radius:8px;min-width:160px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:99;display:none;overflow:hidden}
+    .action-dropdown.open{display:block}
+    .action-dropdown button{width:100%;text-align:left;padding:10px 16px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--dark-navy);display:flex;align-items:center;gap:8px;transition:.15s}
+    .action-dropdown button:hover{background:var(--bg-gray)}
+    .action-dropdown button.danger{color:#ef4444}
+    .action-dropdown button.danger:hover{background:#fee2e2}
+  </style>
+<style>
+@media (max-width: 768px) {
+  .admin-mobile-sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
+    background: #1e2a3a; z-index: 200;
+    transform: translateX(-100%); transition: transform .28s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+  }
+  .admin-mobile-sidebar.open { transform: translateX(0); }
+  .admin-mobile-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 199;
+    opacity: 0; transition: opacity .25s;
+  }
+  .admin-mobile-overlay.visible { opacity: 1; }
+  .admin-hamburger {
+    display: flex !important; align-items: center; justify-content: center;
+    width: 34px; height: 34px; border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px; background: none; cursor: pointer;
+    color: #e2e8f0; font-size: 18px; flex-shrink: 0;
+  }
+}
+@media (min-width: 769px) {
+  .admin-hamburger { display: none !important; }
+  .admin-mobile-sidebar { display: none !important; }
+  .admin-mobile-overlay { display: none !important; }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg> MedCampus</div>
+    <nav class="sidebar-nav">
+      <a href="admin-dashboard.html"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a>
+      <a href="admin-inventory.html"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Inventory</a>
+      <a href="admin-users.html"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Users</a>
+      <a href="admin-schedules.html" class="active"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Schedules</a>
+    </nav>
+    <div class="sidebar-footer"><a href="admin-settings.html"><svg width="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Settings</a></div>
+  </aside>
+
+  <div class="main-wrapper">
+    <header class="topbar">
+      <div class="breadcrumb">Admin &rsaquo; <span>Schedules</span></div>
+      <div class="topbar-right">
+        <div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="searchInput" placeholder="Search doctors or departments…"></div>
+        <div style="color:var(--text-gray);cursor:pointer;">🔔</div>
+        <div class="admin-profile">
+          <div class="admin-info"><h4>— </h4><p>Super Admin</p></div>
+          <div class="admin-avatar"><img src="https://placehold.co/40x40/94a3b8/fff?text=AU" alt="Avatar" style="width:100%;"></div>
+        
+            <button data-action="logout" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;">↩</button></div>
+      </div>
+    </header>
+
+    <main class="content-area">
+      <div class="page-header">
+        <div><h1>Clinical Schedules</h1><p>Manage routine practitioner shifts and clinic availability.</p></div>
+        <a href="admin-schedule-add.html" class="btn btn-primary">➕ Add Schedule</a>
+      </div>
+
+      <!-- View Toggle + Filter -->
+      <div class="flex-between" style="background:var(--white);padding:16px 24px;border-radius:12px;border:1px solid var(--border);margin-bottom:24px;">
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" data-view="weekly" id="btnWeekly">Weekly View</button>
+          <button class="btn btn-outline" data-view="list" id="btnList" style="border:none;background:transparent;">List View</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:13px;font-weight:700;color:var(--text-gray);text-transform:uppercase;">Filter:</span>
+          <select id="deptFilter" class="admin-form-select" style="padding:8px 32px 8px 16px;width:200px;background-color:var(--white);cursor:pointer;">
+            <option value="all">All Departments</option>
+            <option value="Cardiology">Cardiology</option>
+            <option value="Neurology">Neurology</option>
+            <option value="Pediatrics">Pediatrics</option>
+            <option value="General Medicine">General Medicine</option>
+          </select>
+          <select id="statusFilter" class="admin-form-select" style="padding:8px 32px 8px 16px;width:160px;background-color:var(--white);cursor:pointer;">
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="leave">On Leave</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Weekly header (shown in weekly view) -->
+      <div id="weeklyHeader" class="table-container" style="border-radius:12px 12px 0 0;border-bottom:none;margin-bottom:0;">
+        <div class="admin-schedule-header" id="weekHeader"></div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-container" style="border-radius:0 0 12px 12px;">
+        <table>
+          <thead><tr><th>Doctor</th><th>Department</th><th>Shift &amp; Time</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="schedBody"></tbody>
+        </table>
+        <div id="emptyState" style="text-align:center;padding:60px 24px;color:var(--text-gray);display:none;">
+          <div style="font-size:40px;margin-bottom:12px;">📅</div>
+          <h3 style="color:var(--dark-navy);margin-bottom:8px;">No schedules found</h3>
+          <p>Try adjusting your filters or <a href="admin-schedule-add.html" style="color:var(--primary-green);font-weight:600;">add a new schedule</a>.</p>
+        </div>
+        <div class="flex-between" style="padding:16px 24px;border-top:1px solid var(--border);">
+          <span id="countLabel" style="font-size:13px;color:var(--text-gray);"></span>
+          <a href="admin-schedule-add.html" class="btn btn-primary" style="padding:8px 16px;">➕ Add Schedule</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="admin.js"></script>
+  <script>
+    const DEPT_BADGE = {
+      'Cardiology':       {bg:'var(--light-green)',color:'var(--primary-green)'},
+      'Neurology':        {bg:'#fdf4ff',color:'#a855f7'},
+      'Pediatrics':       {bg:'#eff6ff',color:'#3b82f6'},
+      'General Medicine': {bg:'#ffedd5',color:'#ea580c'},
+    };
+    const SHIFT_ICON = { Morning:'🌅', Afternoon:'☀️', Evening:'🌙' };
+    let activeDD = null;
+
+    document.addEventListener('click', e => {
+      if (activeDD && !activeDD.contains(e.target)) { activeDD.querySelector('.action-dropdown')?.classList.remove('open'); activeDD = null; }
+    });
+
+    // Build weekly day header from schedule dates
+    function buildWeekHeader() {
+      const header = document.getElementById('weekHeader');
+      const days   = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+      const today  = new Date().getDay(); // 0=Sun
+      header.innerHTML = '';
+      days.forEach((d, i) => {
+        const isToday = (i + 1) % 7 === today % 7;
+        const div = document.createElement('div');
+        div.className = 'admin-schedule-day' + (isToday ? ' active' : '');
+        const dayNum = 14 + i; // week of Oct 14–20
+        div.innerHTML = `<div class="admin-schedule-day-name" style="${isToday?'color:var(--primary-green);':''}">${d}</div><div class="admin-schedule-day-date">${dayNum}</div>`;
+        header.appendChild(div);
+      });
+    }
+
+    function renderTable(list) {
+      const tbody = document.getElementById('schedBody');
+      const empty = document.getElementById('emptyState');
+      tbody.innerHTML = '';
+      const all = AppData.getSchedules();
+      document.getElementById('countLabel').textContent = `Showing ${list.length} of ${all.length} practitioners`;
+
+      if (!list.length) { empty.style.display = 'block'; return; }
+      empty.style.display = 'none';
+
+      list.forEach(s => {
+        const dc  = DEPT_BADGE[s.department] || {bg:'var(--bg-gray)',color:'var(--text-gray)'};
+        const tr  = document.createElement('tr');
+        const statusBadge = s.status === 'active'
+          ? `<span class="badge" style="border:1px solid var(--primary-green);color:var(--primary-green);background:transparent;">Active</span>`
+          : `<span class="badge" style="border:1px solid #ef4444;color:#ef4444;background:transparent;">On Leave</span>`;
+
+        tr.innerHTML = `
+          <td>
+            <div class="doctor-row">
+              <img src="https://placehold.co/40x40/cbd5e1/ffffff?text=${s.initials}" alt="${s.doctor}">
+              <div>
+                <h4 style="font-size:14px;color:var(--dark-navy);">${s.doctor}</h4>
+                <p style="font-size:11px;color:var(--text-gray);">ID: ${s.doctorId}</p>
+              </div>
+            </div>
+          </td>
+          <td><span class="badge" style="background:${dc.bg};color:${dc.color};">${s.department}</span></td>
+          <td style="font-weight:600;"><span style="color:var(--primary-green);margin-right:6px;">${SHIFT_ICON[s.shift]||'🕒'}</span>${s.shift} • ${s.shiftTime}</td>
+          <td style="color:var(--text-gray);font-size:13px;">${s.room}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div class="action-menu" data-sid="${s.id}">
+              <button class="action-menu-btn">⋯</button>
+              <div class="action-dropdown">
+                <button data-action="toggle" data-sid="${s.id}">${s.status==='active'?'🏖 Mark On Leave':'✅ Mark Active'}</button>
+                <button data-action="delete" data-sid="${s.id}" class="danger">🗑 Delete</button>
+              </div>
+            </div>
+          </td>`;
+        tbody.appendChild(tr);
+      });
+
+      document.querySelectorAll('.action-menu-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const menu = btn.closest('.action-menu'), dd = menu.querySelector('.action-dropdown');
+          const open = dd.classList.contains('open');
+          if (activeDD && activeDD !== menu) activeDD.querySelector('.action-dropdown').classList.remove('open');
+          dd.classList.toggle('open', !open); activeDD = open ? null : menu;
+        });
+      });
+
+      document.querySelectorAll('.action-dropdown button').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          btn.closest('.action-dropdown').classList.remove('open'); activeDD = null;
+          const { action, sid } = btn.dataset;
+          if (action === 'edit')   handleEdit(sid);
+          if (action === 'toggle') handleToggle(sid);
+          if (action === 'delete') handleDelete(sid);
+        });
+      });
+    }
+
+    function applyFilters() {
+      const q    = document.getElementById('searchInput').value.toLowerCase();
+      const dept = document.getElementById('deptFilter').value;
+      const stat = document.getElementById('statusFilter').value;
+      renderTable(AppData.getSchedules().filter(s =>
+        (!q || s.doctor.toLowerCase().includes(q) || s.department.toLowerCase().includes(q)) &&
+        (dept === 'all' || s.department === dept) &&
+        (stat === 'all' || s.status === stat)
+      ));
+    }
+
+    function handleToggle(sid) {
+      const scheds = AppData.getSchedules();
+      const s = scheds.find(x => x.id === sid); if (!s) return;
+      s.status = s.status === 'active' ? 'leave' : 'active';
+      AppData.saveSchedules(scheds);
+      Toast.show(`${s.doctor} marked as ${s.status === 'active' ? 'Active' : 'On Leave'}.`, 'info');
+      applyFilters();
+    }
+
+    function handleDelete(sid) {
+      const scheds = AppData.getSchedules();
+      const s = scheds.find(x => x.id === sid); if (!s) return;
+      if (!confirm(`Delete schedule for ${s.doctor}?`)) return;
+      AppData.saveSchedules(scheds.filter(x => x.id !== sid));
+      Toast.show(`Schedule for ${s.doctor} deleted.`, 'info');
+      applyFilters();
+    }
+
+    // View toggle
+    document.getElementById('btnWeekly').addEventListener('click', () => {
+      document.getElementById('btnWeekly').classList.add('btn-primary'); document.getElementById('btnWeekly').classList.remove('btn-outline');
+      document.getElementById('btnList').classList.remove('btn-primary'); document.getElementById('btnList').style.background = 'transparent';
+      document.getElementById('weeklyHeader').style.display = '';
+    });
+    document.getElementById('btnList').addEventListener('click', () => {
+      document.getElementById('btnList').classList.add('btn-primary'); document.getElementById('btnList').style.background = '';
+      document.getElementById('btnWeekly').classList.remove('btn-primary'); document.getElementById('btnWeekly').classList.add('btn-outline');
+      document.getElementById('weeklyHeader').style.display = 'none';
+    });
+
+    ['searchInput','deptFilter','statusFilter'].forEach(id =>
+      document.getElementById(id).addEventListener(id==='searchInput'?'input':'change', applyFilters)
+    );
+
+    buildWeekHeader();
+    applyFilters();
+
+    // ── Edit Schedule Modal ───────────────────────────────────────────────────
+    const editModal = document.createElement('div');
+    editModal.id = 'editSchedModal';
+    editModal.style.cssText = 'position:fixed;inset:0;background:rgba(21,30,45,.55);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;';
+    editModal.innerHTML = `
+      <div id="editSchedCard" style="background:var(--white);border-radius:12px;padding:32px;max-width:500px;width:100%;box-shadow:0 20px 40px rgba(0,0,0,.15);transform:translateY(16px);transition:transform .25s;">
+        <h2 style="font-size:18px;margin-bottom:24px;">✏️ Edit Schedule</h2>
+        <div class="admin-form-group">
+          <label class="admin-form-label">Doctor</label>
+          <input type="text" id="edit-sched-doctor" class="admin-form-input" readonly style="color:var(--text-gray);">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="admin-form-group">
+            <label class="admin-form-label">Department</label>
+            <select id="edit-sched-dept" class="admin-form-select">
+              <option>General Medicine</option><option>Cardiology</option>
+              <option>Neurology</option><option>Pediatrics</option><option>Dental Unit</option>
+            </select>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">Room</label>
+            <input type="text" id="edit-sched-room" class="admin-form-input">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="admin-form-group">
+            <label class="admin-form-label">Shift</label>
+            <select id="edit-sched-shift" class="admin-form-select">
+              <option value="Morning">🌅 Morning (08:00–14:00)</option>
+              <option value="Afternoon">☀️ Afternoon (14:00–20:00)</option>
+              <option value="Evening">🌙 Evening (20:00–02:00)</option>
+            </select>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label">Status</label>
+            <select id="edit-sched-status" class="admin-form-select">
+              <option value="active">Active</option>
+              <option value="leave">On Leave</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-form-group">
+          <label class="admin-form-label">Notes</label>
+          <textarea id="edit-sched-notes" class="admin-form-input" style="min-height:80px;resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:8px;">
+          <button id="closeEditSched" class="btn btn-outline">Cancel</button>
+          <button id="saveEditSched" class="btn btn-primary">💾 Save Changes</button>
+        </div>
+      </div>`;
+    document.body.appendChild(editModal);
+
+    let editingSchedId = null;
+    const SHIFT_TIMES = { Morning:'08:00 – 14:00', Afternoon:'14:00 – 20:00', Evening:'20:00 – 02:00' };
+
+    function handleEdit(sid) {
+      const s = AppData.getSchedules().find(x => x.id === sid);
+      if (!s) return;
+      editingSchedId = sid;
+      document.getElementById('edit-sched-doctor').value = s.doctor;
+      document.getElementById('edit-sched-dept').value   = s.department;
+      document.getElementById('edit-sched-room').value   = s.room;
+      document.getElementById('edit-sched-shift').value  = s.shift;
+      document.getElementById('edit-sched-status').value = s.status;
+      document.getElementById('edit-sched-notes').value  = s.notes || '';
+      editModal.style.opacity = '1'; editModal.style.pointerEvents = 'auto';
+      document.getElementById('editSchedCard').style.transform = 'translateY(0)';
+    }
+
+    function closeEditModal() {
+      editModal.style.opacity = '0'; editModal.style.pointerEvents = 'none';
+      document.getElementById('editSchedCard').style.transform = 'translateY(16px)';
+      editingSchedId = null;
+    }
+
+    document.getElementById('closeEditSched').addEventListener('click', closeEditModal);
+    editModal.addEventListener('click', e => { if (e.target === editModal) closeEditModal(); });
+
+    document.getElementById('saveEditSched').addEventListener('click', () => {
+      if (!editingSchedId) return;
+      const scheds = AppData.getSchedules();
+      const idx    = scheds.findIndex(x => x.id === editingSchedId);
+      if (idx === -1) return;
+      const shift = document.getElementById('edit-sched-shift').value;
+      scheds[idx] = {
+        ...scheds[idx],
+        department: document.getElementById('edit-sched-dept').value,
+        room:       document.getElementById('edit-sched-room').value,
+        shift,      shiftTime: SHIFT_TIMES[shift],
+        status:     document.getElementById('edit-sched-status').value,
+        notes:      document.getElementById('edit-sched-notes').value,
+      };
+      AppData.saveSchedules(scheds);
+      Toast.show('Schedule updated successfully!', 'success');
+      closeEditModal();
+      applyFilters();
+    });
+
+    // ── Conflict detection in admin-schedule-add ──────────────────────────────
+    // (handled in schedule-add.html)
+
+  </script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+<script>
+(function() {
+  if (window.innerWidth > 768) return;
+
+  const topbar = document.querySelector('.topbar');
+  if (!topbar) return;
+
+  // Add hamburger button to topbar
+  const hamBtn = document.createElement('button');
+  hamBtn.className = 'admin-hamburger';
+  hamBtn.innerHTML = '☰';
+  hamBtn.title = 'Menu';
+  topbar.insertBefore(hamBtn, topbar.firstChild);
+
+  // Clone sidebar content into mobile sidebar
+  const origSidebar = document.querySelector('.sidebar');
+  if (!origSidebar) return;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'admin-mobile-overlay';
+  overlay.style.display = 'none';
+  document.body.appendChild(overlay);
+
+  const mobileSidebar = document.createElement('div');
+  mobileSidebar.className = 'admin-mobile-sidebar';
+  mobileSidebar.innerHTML = origSidebar.innerHTML;
+  // Style the close button
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '✕';
+  closeBtn.style.cssText = 'position:absolute;top:16px;right:16px;background:none;border:none;color:#94a3b8;font-size:18px;cursor:pointer;padding:4px;';
+  mobileSidebar.style.position = 'fixed';
+  mobileSidebar.appendChild(closeBtn);
+  document.body.appendChild(mobileSidebar);
+
+  function openMenu() {
+    overlay.style.display = 'block';
+    requestAnimationFrame(() => overlay.classList.add('visible'));
+    mobileSidebar.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    overlay.classList.remove('visible');
+    mobileSidebar.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => { overlay.style.display = 'none'; }, 260);
+  }
+
+  hamBtn.addEventListener('click', openMenu);
+  overlay.addEventListener('click', closeMenu);
+  closeBtn.addEventListener('click', closeMenu);
+  mobileSidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+})();
+</script>
+</body>
+</html>

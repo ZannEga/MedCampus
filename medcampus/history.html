@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical History - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        MedCampus
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html">Home</a>
+        <a href="booking.html">Book Appointment</a>
+        <a href="history.html" class="active">Medical History</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <div class="flex-between" style="margin-bottom:32px;">
+      <div>
+        <h1 style="margin-bottom:8px;">Medical History</h1>
+        <p style="color:var(--text-gray);">Manage and review your medical records, diagnoses, and prescriptions.</p>
+      </div>
+      <button class="btn btn-outline" id="btnDownloadReport">📥 Download Report</button>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap;">
+      <input type="text" id="historySearch" placeholder="Search clinics, doctors…"
+        style="flex:1;min-width:200px;padding:12px 16px;border:1px solid var(--border);border-radius:8px;outline:none;font-family:var(--font-main);font-size:14px;">
+      <button class="btn history-filter-btn hfb-active" data-filter="all">All Status</button>
+      <button class="btn history-filter-btn" data-filter="completed">Completed</button>
+      <button class="btn history-filter-btn" data-filter="cancelled">Cancelled</button>
+      <button class="btn history-filter-btn" data-filter="general">General Clinic</button>
+      <button class="btn history-filter-btn" data-filter="dental">Dental Clinic</button>
+    </div>
+
+    <div id="historyList"></div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    function renderHistory(visits) {
+      const list = document.getElementById('historyList');
+      list.innerHTML = '';
+      visits.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'history-card card-shadow';
+        card.dataset.status = v.status;
+
+        if (v.status === 'completed') {
+          const medList = v.medicines.map(m => `${m.name} ${m.dose}`).join(', ');
+          const shortDx = v.diagnosis ? v.diagnosis.split('(')[0].trim() : '—';
+          card.innerHTML = `
+            <img src="https://placehold.co/200x200/e2e8f0/64748b?text=Clinic" alt="Clinic" class="history-img">
+            <div class="history-content">
+              <div style="grid-column:span 2;">
+                <div><span class="badge badge-completed">Completed</span>
+                <span style="font-size:12px;color:var(--text-gray);margin-left:8px;">ID: ${v.id}</span></div>
+                <div class="history-title">
+                  <h3>${v.clinic} — ${v.doctor}</h3>
+                  <p style="font-size:13px;color:var(--text-gray);">${v.date} • ${v.time}</p>
+                </div>
+              </div>
+              <div>
+                <p style="font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;">Diagnosis</p>
+                <p style="font-weight:500;font-size:14px;">${shortDx}</p>
+              </div>
+              <div>
+                <p style="font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;">Prescribed Medicines</p>
+                <p style="font-weight:500;font-size:14px;">${medList}</p>
+              </div>
+              <div style="grid-column:span 2;text-align:right;margin-top:8px;">
+                <button class="btn btn-primary visit-detail-btn" data-id="${v.id}">📄 Visit Detail</button>
+              </div>
+            </div>`;
+        } else {
+          card.innerHTML = `
+            <img src="https://placehold.co/200x200/e2e8f0/64748b?text=Doctor" alt="Doctor" class="history-img">
+            <div class="history-content">
+              <div style="grid-column:span 2;">
+                <div><span class="badge badge-cancelled">Cancelled</span>
+                <span style="font-size:12px;color:var(--text-gray);margin-left:8px;">ID: ${v.id}</span></div>
+                <div class="history-title">
+                  <h3>${v.clinic} — ${v.doctor}</h3>
+                  <p style="font-size:13px;color:var(--text-gray);">${v.date} • ${v.time}</p>
+                </div>
+              </div>
+              <div style="grid-column:span 2;">
+                <p style="font-size:13px;color:var(--text-gray);font-style:italic;">Cancellation reason: ${v.cancelReason}</p>
+              </div>
+              <div style="grid-column:span 2;text-align:right;margin-top:8px;">
+                <a href="booking.html" class="btn btn-outline" style="background:#f8fafc;">↻ Book Again</a>
+              </div>
+            </div>`;
+        }
+        list.appendChild(card);
+      });
+
+      if (!visits.length) {
+        list.innerHTML = \`<div style="text-align:center;padding:60px 24px;color:var(--text-gray);">
+          <div style="font-size:48px;margin-bottom:16px;">📋</div>
+          <h3 style="color:var(--dark-navy);margin-bottom:8px;">No Medical History Yet</h3>
+          <p style="margin-bottom:24px;">Your visit records will appear here after your first appointment.</p>
+          <a href="booking.html" class="btn btn-primary">Book Your First Appointment</a>
+        </div>\`;
+        return;
+      }
+
+      document.querySelectorAll('.visit-detail-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          AppData.setVisit(btn.dataset.id);
+          window.location.href = 'visit-detail.html';
+        });
+      });
+    }
+
+    let activeFilter = 'all';
+    function applyFilter(filter, query) {
+      document.querySelectorAll('.history-card').forEach(card => {
+        const badge  = card.querySelector('.badge')?.textContent.toLowerCase() || '';
+        const text   = card.textContent.toLowerCase();
+        const q      = (query || '').toLowerCase();
+        const matchQ = !q || text.includes(q);
+        let   matchF = true;
+        if (filter === 'completed')  matchF = badge.includes('completed') || card.dataset.status === 'completed';
+        else if (filter === 'cancelled') matchF = badge.includes('cancelled') || card.dataset.status === 'cancelled';
+        else if (filter === 'upcoming')  matchF = badge.includes('upcoming') || card.dataset.status === 'upcoming';
+        else if (filter === 'general')   matchF = text.includes('general');
+        else if (filter === 'dental')    matchF = text.includes('dental');
+        // 'all' → show everything
+        card.style.display = (matchQ && matchF) ? '' : 'none';
+      });
+    }
+
+    document.getElementById('historySearch').addEventListener('input', e => applyFilter(activeFilter, e.target.value));
+    document.querySelectorAll('.history-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.history-filter-btn').forEach(b => b.classList.remove('hfb-active'));
+        btn.classList.add('hfb-active');
+        activeFilter = btn.dataset.filter;
+        applyFilter(activeFilter, document.getElementById('historySearch').value);
+      });
+    });
+
+    const visits = AppData.getVisits ? AppData.getVisits() : MOCK_VISITS;
+    renderHistory(visits);
+
+    // Download Report = print page
+    document.getElementById('btnDownloadReport')?.addEventListener('click', () => {
+      Toast.show('Preparing report…', 'info');
+      setTimeout(() => window.print(), 600);
+    });
+
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

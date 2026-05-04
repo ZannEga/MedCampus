@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Records - MedCampus</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          MedCampus
+        </div>
+        <div class="search-bar" id="globalSearch">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search patients…" id="globalSearchInput">
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="doctor-dashboard.html">Dashboard</a>
+        <a href="doctor-patients.html">Today's Patients</a>
+        <a href="doctor-records.html" class="active">Medical Records</a>
+        <a href="doctor-schedule.html">Schedule</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <div class="icon-btn">🔔</div>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container">
+    <div style="margin-bottom:24px;">
+      <h1 style="font-size:32px;margin-bottom:8px;">Medical Records</h1>
+      <p style="color:var(--text-gray);font-size:15px;">Comprehensive access to patient clinical histories and treatment progress.</p>
+    </div>
+
+    <!-- Full-width search -->
+    <div class="search-bar" style="width:100%;max-width:none;padding:16px 24px;background:var(--white);border-radius:12px;margin-bottom:32px;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+      <svg viewBox="0 0 24 24" style="width:20px;stroke:var(--primary-green);"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input type="text" id="recordSearch" placeholder="Search patients by name, ID, or birth date…" style="font-size:16px;">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 2.5fr;gap:24px;">
+
+      <!-- Patient List -->
+      <div>
+        <h3 style="font-size:15px;margin-bottom:16px;">Recent Records</h3>
+        <div id="patientList"></div>
+      </div>
+
+      <!-- Detail Panel -->
+      <div class="card" style="padding:32px;" id="detailPanel">
+        <div class="flex-between" style="margin-bottom:40px;">
+          <div class="patient-cell" style="gap:20px;">
+            <div class="patient-avatar" style="width:80px;height:80px;font-size:24px;background:#cbd5e1;border:none;overflow:hidden;">
+              <img id="rec-avatar" src="https://placehold.co/100x100/94a3b8/ffffff?text=?" alt="Patient" style="width:100%;height:100%;object-fit:cover;">
+            </div>
+            <div>
+              <h2 id="rec-name" style="font-size:24px;margin-bottom:8px;">Select a patient</h2>
+              <p style="color:var(--text-gray);font-size:14px;display:flex;gap:16px;">
+                <span id="rec-dob"></span>
+                <span id="rec-gender"></span>
+                <span id="rec-blood"></span>
+              </p>
+            </div>
+          </div>
+          <button class="btn btn-primary" id="btnNewEntry">➕ New Entry</button>
+        </div>
+
+        <h3 style="font-size:18px;margin-bottom:24px;">Patient History</h3>
+        <div class="timeline" id="rec-timeline">
+          <p style="color:var(--text-gray);font-size:14px;">Select a patient from the list to view their history.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="doctor.js"></script>
+  <script>
+    let selectedRecord = AppData.getRecord() || MOCK_RECORDS[0];
+
+    function renderPatientList(records) {
+      const list = document.getElementById('patientList');
+      list.innerHTML = '';
+      records.forEach(r => {
+        const card = document.createElement('div');
+        const isSelected = selectedRecord && selectedRecord.patientId === r.patientId;
+        card.className = 'card patient-record-card';
+        card.style.cssText = `padding:16px;margin-bottom:16px;cursor:pointer;${isSelected ? 'border-color:var(--primary-green);background:var(--light-green);' : ''}`;
+        card.innerHTML = `
+          <div class="flex-between" style="margin-bottom:16px;">
+            <div class="patient-cell">
+              <div class="patient-avatar" style="background:${isSelected ? 'var(--primary-green)' : '#e2e8f0'};color:${isSelected ? 'white' : 'var(--text-gray)'};border:none;">
+                ${r.name.split(' ').map(w=>w[0]).slice(0,2).join('')}
+              </div>
+              <div class="patient-info"><h4>${r.name}</h4><p>${r.patientId} • ${r.dob.split(' ')[2]} YRS</p></div>
+            </div>
+          </div>
+          <div class="flex-between" style="font-size:12px;">
+            <span style="color:var(--text-gray);">Last Visit: ${r.lastVisit}</span>
+            <span class="badge" style="background:${isSelected ? 'var(--primary-green)' : 'var(--bg-gray)'};color:${isSelected ? 'white' : 'var(--text-gray)'};">${r.statusLabel}</span>
+          </div>`;
+
+        card.addEventListener('click', () => {
+          selectedRecord = r;
+          AppData.setRecord(r);
+          renderPatientList(records);
+          renderDetail(r);
+        });
+        list.appendChild(card);
+      });
+    }
+
+    function renderDetail(r) {
+      document.getElementById('rec-name').textContent   = r.name;
+      document.getElementById('rec-dob').textContent    = '📅 ' + r.dob;
+      document.getElementById('rec-gender').textContent = (r.gender === 'Male' ? '♂' : '♀') + ' ' + r.gender;
+      document.getElementById('rec-blood').textContent  = '🩸 ' + r.blood;
+      document.getElementById('rec-avatar').src = `https://placehold.co/100x100/94a3b8/ffffff?text=${r.name.split(' ').map(w=>w[0]).slice(0,2).join('')}`;
+
+      const timeline = document.getElementById('rec-timeline');
+      timeline.innerHTML = '';
+      r.history.forEach((h, i) => {
+        const item = document.createElement('div');
+        item.className = 'timeline-item';
+        item.innerHTML = `
+          <div class="timeline-dot ${i === 0 ? 'active' : ''}"></div>
+          <div class="flex-between" style="margin-bottom:16px;">
+            <h4 style="color:${i === 0 ? 'var(--primary-green)' : 'var(--text-gray)'};">${h.date}</h4>
+            <span style="font-size:13px;color:var(--text-gray);">${h.doctor} • ${h.type}</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+            <div>
+              <p class="info-label">Diagnosis</p>
+              <p style="font-size:14px;">${h.diagnosis}</p>
+            </div>
+            <div>
+              <p class="info-label">Prescription</p>
+              <ul style="font-size:14px;font-weight:500;">
+                ${h.medicines.map(m => `<li style="margin-bottom:4px;">• ${m}</li>`).join('')}
+              </ul>
+            </div>
+          </div>`;
+        timeline.appendChild(item);
+      });
+
+      if (r.history.length > 2) {
+        const more = document.createElement('div');
+        more.style.textAlign = 'center';
+        more.style.marginTop = '32px';
+        more.innerHTML = `<button class="btn btn-outline" style="border:none;color:var(--primary-green);font-weight:600;">View older records (${r.history.length - 2} more)</button>`;
+        timeline.appendChild(more);
+      }
+    }
+
+    // New Entry button — save selected record then navigate
+    document.getElementById('btnNewEntry').addEventListener('click', () => {
+      if (!selectedRecord) { Toast.show('Please select a patient first.', 'warning'); return; }
+      // Store a synthetic "patient" object for new-entry to read
+      AppData.setPatient({
+        id: selectedRecord.patientId,
+        name: selectedRecord.name,
+        queue: '—',
+        gender: selectedRecord.gender,
+        age: new Date().getFullYear() - parseInt(selectedRecord.dob.split(' ')[2]),
+        type: 'Consultation'
+      });
+      sessionStorage.setItem('mc_entry_origin','doctor-records.html'); window.location.href = 'doctor-new-entry.html';
+    });
+
+    // Record search
+    document.getElementById('recordSearch').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      const filtered = MOCK_RECORDS.filter(r => r.name.toLowerCase().includes(q) || r.patientId.toLowerCase().includes(q) || r.dob.toLowerCase().includes(q));
+      renderPatientList(filtered);
+    });
+
+    // Init
+    renderPatientList(MOCK_RECORDS);
+    if (selectedRecord) renderDetail(selectedRecord);
+  </script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        MedCampus
+      </div>
+      <div class="nav-links">
+        <a href="dashboard.html" class="active">Home</a>
+        <a href="booking.html">Book Appointment</a>
+        <a href="history.html">Medical History</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <div class="hero-dashboard">
+      <h1 id="dash-welcome">Welcome</h1>
+      <p>Your health is our top priority at MedCampus Clinic. Track your queue and access medical services with ease.</p>
+      <a href="service-guide.html" class="btn btn-primary">Service Guide</a>
+    </div>
+
+    <div class="flex-between" style="margin-bottom:20px;">
+      <h2 class="section-title" style="margin:0;">Your Active Queue</h2>
+      <span style="font-size:13px;color:var(--primary-green);font-weight:600;" id="queueUpdated">Updated just now</span>
+    </div>
+
+    <!-- No active queue state (hidden by default, shown by JS) -->
+    <div id="noQueueState" style="display:none;text-align:center;padding:60px 24px;background:var(--white);border-radius:12px;border:1px solid var(--border);">
+      <div style="font-size:48px;margin-bottom:16px;">📭</div>
+      <h3 style="font-size:20px;margin-bottom:8px;">No Active Queue</h3>
+      <p style="color:var(--text-gray);margin-bottom:24px;">You don't have any upcoming appointments today.</p>
+      <a href="booking.html" class="btn btn-primary">⊕ Book an Appointment</a>
+    </div>
+
+
+    <div id="queueCard" class="queue-card card-shadow">
+      <div class="queue-number-box">
+        <span>Queue Number</span>
+        <h2 id="dash-queue-num">—</h2>
+      </div>
+      <div class="queue-details">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+          <span class="badge badge-waiting">🕒 Waiting</span>
+          <span style="font-size:13px;color:var(--text-gray);">• Today's Appointment</span>
+        </div>
+        <div class="grid-2">
+          <div>
+            <p style="font-size:11px;color:var(--text-gray);text-transform:uppercase;font-weight:700;">Clinic</p>
+            <p style="font-weight:600;" id="dash-clinic">—</p>
+          </div>
+          <div>
+            <p style="font-size:11px;color:var(--text-gray);text-transform:uppercase;font-weight:700;">Doctor</p>
+            <p style="font-weight:600;" id="dash-doctor">—</p>
+          </div>
+        </div>
+        <div style="margin-top:16px;color:var(--primary-green);font-weight:500;font-size:14px;">
+          ⏱ Estimated Service Time: <span id="dash-est-time">—</span>
+        </div>
+      </div>
+      <div class="queue-actions">
+        <button class="btn btn-primary" id="btnQueueDetail">👁 Queue Details</button>
+        <button onclick="openCancelModal()" class="btn btn-outline" style="background:#f1f5f9;border:none;">Cancel</button>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:60px;">
+      <h3>Need another consultation?</h3>
+      <p style="color:var(--text-gray);margin-bottom:24px;">You can make a new reservation for a different clinic.</p>
+      <a href="booking.html" class="btn btn-primary">⊕ Book New Appointment</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content">
+      <span>© 2026 MedCampus Patient Portal. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <!-- Cancel Modal -->
+  <div id="cancelModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+        <h2 style="font-size:18px;color:var(--dark-navy);">Cancel Appointment</h2>
+      </div>
+      <p style="color:var(--text-gray);font-size:14px;margin-bottom:24px;line-height:1.6;">
+        Are you sure you want to cancel? This action cannot be undone and your queue position (<span id="cancel-queue-num">—</span>) will be lost.
+      </p>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <button onclick="confirmCancel()" class="btn-danger">Yes, Cancel</button>
+        <button onclick="closeCancelModal()" class="btn btn-outline" style="color:var(--primary-green);border-color:var(--border);width:100%;">No, Keep Appointment</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    // Populate dashboard from MOCK_QUEUE
+    const q = MOCK_QUEUE;
+    document.getElementById('dash-queue-num').textContent  = q.number;
+    document.getElementById('dash-clinic').textContent     = q.clinic;
+    document.getElementById('dash-doctor').textContent     = q.doctor;
+    document.getElementById('dash-est-time').textContent   = q.estimatedTime;
+    document.getElementById('cancel-queue-num').textContent = q.number;
+    document.getElementById('queueUpdated').textContent    = 'Updated: ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+
+    // Save queue data then navigate to detail page
+    document.getElementById('btnQueueDetail').addEventListener('click', () => {
+      AppData.setQueue(q);
+      window.location.href = 'queue-detail.html';
+    });
+
+    // ── Show/hide queue card based on active session ──────────────────────────
+    (function() {
+      const q = AppData.getQueue();
+      // If no real queue stored (fresh session), check if queue data is default
+      // For demo: always show queue card. In production, check a "hasActiveQueue" flag.
+      const hasActive = !!localStorage.getItem('mc_active_queue');
+      document.getElementById('noQueueState').style.display = hasActive ? 'none' : '';
+      document.getElementById('queueCard').style.display    = hasActive ? ''     : 'none';
+      // Update queue number from stored data
+      if (q) {
+        document.getElementById('dash-queue-num').textContent = q.number || '—';
+        document.getElementById('dash-clinic').textContent    = q.clinic  || '—';
+        document.getElementById('dash-doctor').textContent    = q.doctor  || '—';
+        document.getElementById('dash-est-time').textContent  = q.estimatedTime || '—';
+        document.getElementById('cancel-queue-num').textContent = q.number || '—';
+        document.getElementById('queueUpdated').textContent  =
+          'Updated: ' + new Date().toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
+      }
+    })();
+
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

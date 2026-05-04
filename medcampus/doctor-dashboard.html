@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - MedCampus</title>
+  <style>
+.notif-panel {
+  position:absolute; right:0; top:calc(100% + 8px); width:320px;
+  background:var(--white); border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:200;
+  display:none; overflow:hidden;
+}
+.notif-panel.open { display:block; }
+.notif-header { padding:14px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.notif-header h4 { font-size:14px; font-weight:700; }
+.notif-header span { font-size:11px; color:var(--primary-green); font-weight:600; cursor:pointer; }
+.notif-item { padding:14px 18px; border-bottom:1px solid var(--border); cursor:pointer; transition:.15s; display:flex; gap:12px; }
+.notif-item:hover { background:var(--bg-gray); }
+.notif-item:last-child { border-bottom:none; }
+.notif-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:5px; }
+.notif-item h5 { font-size:13px; margin-bottom:3px; }
+.notif-item p  { font-size:11px; color:var(--text-gray); }
+.bell-wrapper  { position:relative; }
+</style>
+<link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-left">
+        <div class="nav-logo">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+          MedCampus
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search patients…" id="dashSearch">
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="doctor-dashboard.html" class="active">Dashboard</a>
+        <a href="doctor-patients.html">Today's Patients</a>
+        <a href="doctor-records.html">Medical Records</a>
+        <a href="doctor-schedule.html">Schedule</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <div class="icon-btn">🔔</div>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+    </div>
+  </nav>
+
+  <main class="main-content container">
+    <div style="margin-bottom:32px;">
+      <h1 style="font-size:32px;margin-bottom:8px;" id="doc-greeting">Good Morning, Doctor</h1>
+      <p style="color:var(--text-gray);font-size:16px;">University Health System Dashboard • <span style="color:var(--primary-green);font-weight:500;" id="dash-date"></span></p>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid-3" style="margin-bottom:32px;">
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Patients Today</span>
+          <div class="stat-icon">👥</div>
+        </div>
+        <div>
+          <div class="stat-value" id="stat-total">—</div>
+          <div class="stat-desc" id="stat-trend-desc"><span class="stat-trend-up" id="stat-trend">↗ —</span>&nbsp;than yesterday</div>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Pending Exams</span>
+          <div class="stat-icon" style="background:#fffbeb;color:#d97706;">📋</div>
+        </div>
+        <div>
+          <div class="stat-value" id="stat-pending">—</div>
+          <div class="stat-desc">⏱ Next: <span id="stat-next-time">—</span></div>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="stat-header">
+          <span class="stat-title">Completed</span>
+          <div class="stat-icon" style="background:#f0fdf4;color:#16a34a;">✅</div>
+        </div>
+        <div>
+          <div class="stat-value" id="stat-done">—</div>
+          <div style="width:100%;height:6px;background:var(--bg-gray);border-radius:4px;margin-top:12px;overflow:hidden;">
+            <div id="progress-bar" style="height:100%;background:var(--primary-green);border-radius:4px;width:0%;transition:width 0.6s;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Appointments Table -->
+      <div class="card" style="padding:0;overflow:hidden;">
+        <div class="flex-between" style="padding:24px;border-bottom:1px solid var(--border);">
+          <h2 style="font-size:18px;">Today's Appointments</h2>
+          <a href="doctor-patients.html" style="color:var(--primary-green);font-size:14px;font-weight:600;">View All</a>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr><th>Queue</th><th>Patient Name</th><th>Time</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody id="dashTbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div>
+        <div class="card clinic-info-card">
+          <h3 style="display:flex;align-items:center;gap:8px;margin-bottom:24px;"><span>🏥</span> Clinic Info</h3>
+          <div class="info-row">
+            <div class="info-label">Room</div>
+            <div class="info-value">General Clinic — Room 204</div>
+          </div>
+          <div class="info-row">
+            <div class="info-label">Current Shift</div>
+            <div class="info-value">Morning (08:00 – 14:00)</div>
+          </div>
+          <div class="info-row flex-between" style="border-top:1px solid #d1d5db;padding-top:16px;margin-bottom:0;">
+            <span style="font-size:13px;color:var(--text-gray);">Staff on duty</span>
+            <div style="display:flex;">
+              <div style="width:24px;height:24px;border-radius:50%;background:#fca5a5;border:2px solid var(--white);margin-left:-8px;"></div>
+              <div style="width:24px;height:24px;border-radius:50%;background:#fdba74;border:2px solid var(--white);margin-left:-8px;"></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h3 style="font-size:14px;color:var(--text-gray);text-transform:uppercase;margin-bottom:16px;letter-spacing:0.5px;">Quick Links</h3>
+          <a href="doctor-schedule.html" class="quick-link-item">📅 View Full Schedule</a>
+          <a href="doctor-records.html" class="quick-link-item">🗂 Access Medical Records</a>
+          <div class="quick-link-item" style="color:#ef4444;">🚪 Submit Leave Request</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="doctor.js"></script>
+  <script>
+    // Date
+    document.getElementById('dash-date').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+    // Stats from MOCK_PATIENTS
+    const total   = MOCK_PATIENTS.length;
+    const done    = MOCK_PATIENTS.filter(p => p.status === 'completed').length;
+    const pending = MOCK_PATIENTS.filter(p => p.status === 'waiting').length;
+    document.getElementById('stat-total').textContent   = total + 8; // +8 earlier
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-done').textContent    = done + 8;
+    requestAnimationFrame(() => {
+      document.getElementById('progress-bar').style.width = Math.round(((done+8)/(total+8))*100) + '%';
+    });
+
+    // Build dashboard table from first 3 MOCK_PATIENTS
+    const statusMap = {
+      'waiting':     '<span class="badge badge-waiting">Waiting</span>',
+      'in-progress': '<span class="badge badge-consultation">In Consultation</span>',
+      'completed':   '<span class="badge badge-completed">Completed</span>',
+    };
+    const tbody = document.getElementById('dashTbody');
+    MOCK_PATIENTS.slice(0,3).forEach(p => {
+      const tr = document.createElement('tr');
+      const actionLabel = p.status === 'in-progress' ? 'Resume' : p.status === 'completed' ? 'View Record' : 'Start Exam';
+      const btnClass = p.status === 'completed' ? 'btn-outline' : 'btn-primary';
+      tr.innerHTML = `
+        <td><span class="queue-badge">${p.queue}</span></td>
+        <td><div class="patient-info"><h4>${p.name}</h4><p>${p.gender}, ${p.age}y</p></div></td>
+        <td>${p.time}</td>
+        <td>${statusMap[p.status]}</td>
+        <td><button class="btn ${btnClass}" data-patient-id="${p.id}" data-status="${p.status}">${actionLabel}</button></td>`;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll('button[data-patient-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.dataset.status === 'completed') { window.location.href = 'doctor-records.html'; return; }
+        const patient = MOCK_PATIENTS.find(p => p.id === btn.dataset.patientId);
+        if (patient) AppData.setPatient(patient);
+        Toast.show(`Opening session for ${patient?.name}…`, 'info');
+        setTimeout(() => { window.location.href = 'doctor-new-entry.html'; }, 800);
+      });
+    });
+
+    // Search filter on table
+    document.getElementById('dashSearch').addEventListener('input', e => {
+      const q = e.target.value.toLowerCase();
+      tbody.querySelectorAll('tr').forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    });
+  </script>
+<script>
+(function() {
+  const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
+  if (!bellWrap) return;
+
+  // Build notification data from app-data
+  function getNotifs() {
+    const meds = window.AppData?.getMedicines?.() || [];
+    const scheds = window.AppData?.getSchedules?.() || [];
+    const patients = window.MOCK_PATIENTS || [];
+    const notifs = [];
+
+    meds.filter(m => m.status !== 'in_stock').forEach(m => {
+      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+    });
+    scheds.filter(s => s.status === 'leave').forEach(s => {
+      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+    });
+    patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
+      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+    });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    return notifs.slice(0, 6);
+  }
+
+  // Create panel
+  const panel = document.createElement('div');
+  panel.className = 'notif-panel';
+  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  bellWrap.style.position = 'relative';
+  bellWrap.appendChild(panel);
+
+  function renderNotifs() {
+    const list = document.getElementById('notifList');
+    if (!list) return;
+    list.innerHTML = '';
+    getNotifs().forEach(n => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      list.appendChild(div);
+    });
+  }
+
+  // Toggle
+  const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
+  bellWrap.addEventListener('click', e => {
+    e.stopPropagation();
+    renderNotifs();
+    panel.classList.toggle('open');
+  });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+  document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
+})();
+</script>
+
+  <!-- Leave Request Modal -->
+  <div id="leaveModal" style="position:fixed;inset:0;background:rgba(21,30,45,.55);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;">
+    <div id="leaveCard" style="background:var(--white);border-radius:12px;padding:32px;max-width:440px;width:calc(100% - 32px);box-shadow:0 20px 40px rgba(0,0,0,.15);transform:translateY(16px);transition:transform .25s;">
+      <h2 style="font-size:18px;margin-bottom:24px;">🚪 Submit Leave Request</h2>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:var(--dark-navy);display:block;margin-bottom:8px;">Leave Type</label>
+        <select id="leaveType" class="form-input" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+          <option>Annual Leave</option>
+          <option>Sick Leave</option>
+          <option>Emergency Leave</option>
+          <option>Conference / Training</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--dark-navy);display:block;margin-bottom:8px;">Start Date</label>
+          <input type="date" id="leaveStart" class="form-input" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--dark-navy);display:block;margin-bottom:8px;">End Date</label>
+          <input type="date" id="leaveEnd" class="form-input" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;outline:none;">
+        </div>
+      </div>
+      <div style="margin-bottom:24px;">
+        <label style="font-size:13px;font-weight:600;color:var(--dark-navy);display:block;margin-bottom:8px;">Reason / Notes</label>
+        <textarea id="leaveReason" style="width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:14px;min-height:80px;resize:vertical;outline:none;font-family:inherit;" placeholder="Brief reason for leave…"></textarea>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:flex-end;">
+        <button id="closeLeaveModal" class="btn btn-outline">Cancel</button>
+        <button id="submitLeaveBtn" class="btn btn-primary">Submit Request</button>
+      </div>
+    </div>
+  </div>
+<script>
+  const leaveModal = document.getElementById('leaveModal');
+  const leaveCard  = document.getElementById('leaveCard');
+
+  // Wire "Submit Leave Request" link
+  document.querySelectorAll('.quick-link-item').forEach(item => {
+    if (item.textContent.includes('Submit Leave')) {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        const today = new Date().toISOString().slice(0,10);
+        document.getElementById('leaveStart').min = today;
+        document.getElementById('leaveEnd').min   = today;
+        document.getElementById('leaveStart').value = today;
+        leaveModal.style.opacity = '1'; leaveModal.style.pointerEvents = 'auto';
+        leaveCard.style.transform = 'translateY(0)';
+      });
+    }
+  });
+
+  function closeLeave() {
+    leaveModal.style.opacity = '0'; leaveModal.style.pointerEvents = 'none';
+    leaveCard.style.transform = 'translateY(16px)';
+  }
+  document.getElementById('closeLeaveModal')?.addEventListener('click', closeLeave);
+  leaveModal?.addEventListener('click', e => { if (e.target === leaveModal) closeLeave(); });
+
+  document.getElementById('submitLeaveBtn')?.addEventListener('click', () => {
+    const start  = document.getElementById('leaveStart').value;
+    const end    = document.getElementById('leaveEnd').value;
+    const reason = document.getElementById('leaveReason').value.trim();
+    const type   = document.getElementById('leaveType').value;
+    if (!start || !end)  { Toast.show('Please select start and end dates.', 'error'); return; }
+    if (end < start)     { Toast.show('End date cannot be before start date.', 'error'); return; }
+
+    // Update doctor status in schedules
+    const session = AppData.getSession();
+    if (session) {
+      const scheds = AppData.getSchedules();
+      scheds.filter(s => s.doctor === session.name).forEach(s => s.status = 'leave');
+      AppData.saveSchedules(scheds);
+    }
+
+    Toast.show(`Leave request submitted: ${type} from ${start} to ${end}.`, 'success', 4000);
+    closeLeave();
+  });
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>

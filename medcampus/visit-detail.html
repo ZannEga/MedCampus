@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visit Details - MedCampus</title>
+  <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">MedCampus</div>
+      <div class="nav-links">
+        <a href="dashboard.html">Home</a>
+        <a href="booking.html">Book Appointment</a>
+        <a href="history.html" class="active">Medical History</a>
+      </div>
+      <div class="nav-profile">
+        <div class="bell-wrapper">
+          <span class="bell">🔔</span>
+        </div>
+        <!-- Profile dropdown mounted by profile-dropdown.js -->
+      </div>
+  </nav>
+
+  <main class="main-content container">
+    <a href="history.html" style="color:var(--primary-green);font-size:14px;font-weight:600;">← Back to Medical History</a>
+
+    <!-- Header — filled by JS -->
+    <div class="flex-between" style="margin-top:24px;margin-bottom:32px;">
+      <div>
+        <p id="vd-meta" style="font-size:12px;color:var(--text-gray);font-weight:700;text-transform:uppercase;"></p>
+        <h1 id="vd-title" style="margin-top:8px;"></h1>
+      </div>
+      <button class="btn btn-primary" onclick="window.print()">📥 Download PDF</button>
+    </div>
+
+    <div class="detail-grid">
+      <!-- LEFT -->
+      <div>
+        <!-- Diagnosis -->
+        <div class="card card-shadow" style="border-left:4px solid var(--primary-green);">
+          <h3 style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <span style="background:var(--light-green);padding:8px;border-radius:8px;">📄</span> Diagnosis Summary
+          </h3>
+          <h4 id="vd-diagnosis-title" style="color:var(--primary-green);margin-bottom:8px;"></h4>
+          <p id="vd-diagnosis-detail" style="color:var(--text-gray);font-size:14px;"></p>
+        </div>
+
+        <!-- Doctor Notes -->
+        <div class="card card-shadow">
+          <h3 style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+            <span style="background:var(--light-green);padding:8px;border-radius:8px;">👨‍⚕️</span> Doctor's Notes &amp; Advice
+          </h3>
+          <p style="font-size:14px;margin-bottom:16px;">Please follow these instructions to ensure a speedy recovery:</p>
+          <ul id="vd-advice" style="font-size:14px;color:var(--dark-navy);list-style:none;"></ul>
+        </div>
+
+        <!-- Medicines -->
+        <div class="card card-shadow">
+          <h3 style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+            <span style="background:var(--light-green);padding:8px;border-radius:8px;">💊</span> Prescribed Medicines
+          </h3>
+          <div class="med-header">
+            <span>Medicine Name</span><span>Dosage</span><span>Frequency</span><span>Duration</span>
+          </div>
+          <div id="vd-medicines"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div>
+        <div class="card card-shadow">
+          <h3 style="margin-bottom:24px;">Clinic Information</h3>
+          <div style="display:flex;gap:16px;margin-bottom:24px;">
+            <div style="color:var(--primary-green);font-size:20px;">📍</div>
+            <div>
+              <h4 style="font-size:14px;" id="vd-clinic-name"></h4>
+              <p style="font-size:13px;color:var(--text-gray);" id="vd-clinic-address"></p>
+            </div>
+          </div>
+          <div style="display:flex;gap:16px;margin-bottom:24px;">
+            <div style="color:var(--primary-green);font-size:20px;">📞</div>
+            <div>
+              <h4 style="font-size:14px;" id="vd-clinic-phone"></h4>
+              <p style="font-size:13px;color:var(--text-gray);" id="vd-clinic-hours"></p>
+            </div>
+          </div>
+          <div style="width:100%;height:150px;background:#e2e8f0;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-gray);font-weight:600;">
+            MAP AREA
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="utils.js"></script>
+  <script src="app-data.js"></script>
+  <script src="profile-dropdown.js"></script>
+  <script src="patient.js"></script>
+  <script>
+    const visit = AppData.getVisit();
+
+    if (!visit) {
+      // No data — redirect back
+      Toast.show('Visit data not found. Redirecting…', 'error');
+      setTimeout(() => { window.location.href = 'history.html'; }, 1500);
+    } else {
+      // Header
+      document.getElementById('vd-meta').textContent  = `Completed Visit • ID: ${visit.id}`;
+      document.getElementById('vd-title').textContent = `Visit Details — ${visit.date}`;
+
+      // Diagnosis
+      document.getElementById('vd-diagnosis-title').textContent  = visit.diagnosis || '—';
+      document.getElementById('vd-diagnosis-detail').textContent = visit.diagnosisDetail || '';
+
+      // Advice list
+      const adviceEl = document.getElementById('vd-advice');
+      (visit.advice || []).forEach(tip => {
+        const li = document.createElement('li');
+        li.style.marginBottom = '12px';
+        li.textContent = '✅ ' + tip;
+        adviceEl.appendChild(li);
+      });
+
+      // Medicines table rows
+      const medEl = document.getElementById('vd-medicines');
+      visit.medicines.forEach((m, i) => {
+        const row = document.createElement('div');
+        row.className = 'med-row';
+        if (i === visit.medicines.length - 1) row.style.borderBottom = 'none';
+        row.innerHTML = `
+          <div>
+            <p class="med-name">${m.name}</p>
+            <p class="med-desc">${m.desc}</p>
+          </div>
+          <p>${m.dose}</p>
+          <p>${m.freq}</p>
+          <p>${m.duration}</p>`;
+        medEl.appendChild(row);
+      });
+
+      // Clinic info
+      document.getElementById('vd-clinic-name').textContent    = visit.clinic + ' — Main Campus Health Center';
+      document.getElementById('vd-clinic-address').textContent = visit.clinic_address;
+      document.getElementById('vd-clinic-phone').textContent   = visit.clinic_phone;
+      document.getElementById('vd-clinic-hours').textContent   = visit.clinic_hours;
+    }
+  </script>
+  <script>
+(function() {
+  if (window.innerWidth > 768) return;
+  // Add mobile class to body for easy CSS targeting
+  document.body.classList.add('is-mobile');
+
+  // Fix any remaining inline-style grids that don't respond to CSS selectors
+  document.querySelectorAll('[style]').forEach(el => {
+    const s = el.getAttribute('style') || '';
+    const isGrid = s.includes('grid-template-columns') && !s.includes('1fr !important');
+    const has2col = /grid-template-columns\s*:\s*(?:\d+fr\s+){1,}\d+fr/.test(s);
+    if (isGrid && has2col) {
+      el.style.gridTemplateColumns = '1fr';
+      el.style.gap = '16px';
+    }
+    // Fix large padding values inline
+    if (/padding\s*:\s*(?:80|60|56|48|40)px/.test(s)) {
+      el.style.padding = '24px 16px';
+    }
+  });
+})();
+</script>
+  <script src="mobile-nav.js"></script>
+</body>
+</html>
