@@ -40,20 +40,30 @@ class AuthController extends Controller
 
     public function loginProcess(Request $request)
     {
-        // 1. Validasi
+        // 1. Validasi Input
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // 2. Proses Pencocokan
+        // 2. Proses Pencocokan Email & Sandi
         if (\Auth::attempt(['user_email' => $credentials['email'], 'password' => $credentials['password']])) {
             
             // 3. Buat Sesi Baru (Biar nggak gampang di-hack)
             $request->session()->regenerate();
             $user = \Auth::user();
 
-            // 4. Arahkan ke Dashboard masing-masing
+            // 🛑 SATPAM GALAK: CEK STATUS SUSPEND DI SINI 🛑
+            if ($user->user_status === 'suspended') {
+                \Auth::logout(); // Langsung tendang keluar saat itu juga
+                $request->session()->invalidate(); // Hapus sesi
+                $request->session()->regenerateToken(); // Cegah error keamanan
+                
+                // Kembalikan ke halaman login dengan pesan error khusus
+                return back()->withErrors(['msg' => 'Akses Ditolak: Akun Anda sedang ditangguhkan (Suspended). Silakan hubungi Admin.']);
+            }
+
+            // 4. Arahkan ke Dashboard masing-masing jika status AMAN
             if ($user->id_role == '3') {
                 return redirect('/admin/dashboard');
             } elseif ($user->id_role == '2') {
@@ -64,7 +74,7 @@ class AuthController extends Controller
             return redirect('/patient/dashboard');
         }
 
-        // Kalau gagal
+        // Kalau Email/Sandi yang dimasukkan salah
         return back()->withErrors(['msg' => 'Email atau Password salah!']);
     }
 }

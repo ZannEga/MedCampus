@@ -54,7 +54,9 @@
       <div class="breadcrumb">Admin &rsaquo; <span>Schedules</span></div>
       <div class="topbar-right">
         <div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="searchInput" placeholder="Search doctors or departments…"></div>
-        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;">🔔</div>
+        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
         <div class="admin-profile">
           <div class="admin-info">
             <h4>{{ Auth::user()->user_name }}</h4>
@@ -63,7 +65,9 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
       </div>
     </header>
@@ -81,7 +85,10 @@
 
       <div class="page-header">
         <div><h1>Clinical Schedules</h1><p>Manage routine practitioner shifts and clinic availability.</p></div>
-        <a href="{{ url('/admin/schedules/add') }}" class="btn btn-primary">➕ Add Schedule</a>
+        <a href="{{ url('/admin/schedules/add') }}" class="btn btn-primary" style="display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add Schedule
+        </a>
       </div>
 
       <div class="flex-between" style="background:var(--white);padding:16px 24px;border-radius:12px;border:1px solid var(--border);margin-bottom:24px;">
@@ -131,20 +138,26 @@
               <td><span class="badge" style="background:var(--bg-gray);color:var(--text-gray);">{{ $sch->user_dept ?? $sch->department }}</span></td>
               
               <td>
-                <div style="font-weight:600; color:var(--dark-navy); margin-bottom:4px;">
-                  <span style="color:var(--primary-green);margin-right:6px;">🕒</span>{{ $sch->shift }}
+                <div style="font-weight:600; color:var(--dark-navy); margin-bottom:4px; display:flex; align-items:center;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:6px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  {{ $sch->shift }}
                 </div>
-                <div style="font-size:12px; color:var(--text-gray);">
-                  📅 {{ \Carbon\Carbon::parse($sch->schedule_date)->format('d M Y') }}
+                <div style="font-size:12px; color:var(--text-gray); display:flex; align-items:center;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  {{ \Carbon\Carbon::parse($sch->schedule_date)->format('d M Y') }}
                 </div>
               </td>
 
               <td style="color:var(--text-gray);font-size:13px;">{{ $sch->room }}</td>
               <td><span class="badge" style="border:1px solid var(--primary-green);color:var(--primary-green);background:transparent;">Active</span></td>
               <td>
-                <div class="action-menu">
-                  <a href="{{ url('/admin/schedules/edit/' . $sch->id_schedule) }}" style="text-decoration:none; margin-right:8px;" title="Edit">✏️</a>
-                  <a href="javascript:void(0)" onclick="openDeleteModal('{{ url('/admin/schedules/delete/' . $sch->id_schedule) }}')" style="text-decoration:none; color:#ef4444;" title="Delete">🗑</a>
+                <div class="action-menu" style="display:flex;gap:12px;">
+                  <a href="{{ url('/admin/schedules/edit/' . $sch->id_schedule) }}" style="text-decoration:none;color:#64748b;display:flex;align-items:center;" title="Edit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </a>
+                  <a href="javascript:void(0)" onclick="openDeleteModal('{{ url('/admin/schedules/delete/' . $sch->id_schedule) }}')" style="text-decoration:none;color:#ef4444;display:flex;align-items:center;" title="Delete">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </a>
                 </div>
               </td>
             </tr>
@@ -153,14 +166,19 @@
         </table>
         
         <div id="emptyState" style="text-align:center;padding:60px 24px;color:var(--text-gray);display:none;">
-          <div style="font-size:40px;margin-bottom:12px;">📅</div>
+          <div style="margin-bottom:12px;color:#cbd5e1;display:flex;justify-content:center;">
+             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
           <h3 style="color:var(--dark-navy);margin-bottom:8px;">No schedules found</h3>
           <p>Try adjusting your filters or <a href="{{ url('/admin/schedules/add') }}" style="color:var(--primary-green);font-weight:600;">add a new schedule</a>.</p>
         </div>
         
         <div class="flex-between" style="padding:16px 24px;border-top:1px solid var(--border);">
           <span id="countLabel" style="font-size:13px;color:var(--text-gray);"></span>
-          <a href="{{ url('/admin/schedules/add') }}" class="btn btn-primary" style="padding:8px 16px;">➕ Add Schedule</a>
+          <a href="{{ url('/admin/schedules/add') }}" class="btn btn-primary" style="padding:8px 16px;display:flex;align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Schedule
+          </a>
         </div>
       </div>
     </main>
@@ -168,7 +186,9 @@
     <div id="customDeleteModal" class="del-overlay">
       <div class="del-card">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-          <div style="width:48px;height:48px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#ef4444;flex-shrink:0;">🗑</div>
+          <div style="width:48px;height:48px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ef4444;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </div>
           <h2 style="font-size:20px;font-weight:700;color:var(--dark-navy);margin:0;">Delete Schedule</h2>
         </div>
         <p style="color:#475569;font-size:15px;margin-bottom:12px;line-height:1.5;">Are you sure you want to permanently delete this schedule?</p>
@@ -263,7 +283,12 @@
         let currentDay = new Date(monday);
         currentDay.setDate(monday.getDate() + i);
 
-        let dateString = currentDay.toISOString().split('T')[0];
+        // 🌟 PERBAIKAN: Ambil tanggal lokal (WIB), bukan UTC!
+        let y = currentDay.getFullYear();
+        let m = String(currentDay.getMonth() + 1).padStart(2, '0');
+        let dNum = String(currentDay.getDate()).padStart(2, '0');
+        let dateString = `${y}-${m}-${dNum}`; 
+
         let dayNum = currentDay.getDate();
         let isToday = new Date().toDateString() === currentDay.toDateString();
 
@@ -357,7 +382,7 @@
 
       const panel = document.createElement('div');
       panel.className = 'notif-panel';
-      panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+      panel.innerHTML = '<div class="notif-header"><h4 style="display:flex;align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
       bellWrap.style.position = 'relative';
       bellWrap.appendChild(panel);
 
@@ -366,12 +391,12 @@
         if (!list) return;
         list.innerHTML = '';
         const notifs = [
-            { color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications right now.' }
+            { color:'#94a3b8', title:'<span style="display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;color:#059669;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> All Clear</span>', body: 'No new notifications right now.' }
         ];
         notifs.forEach(n => {
           const div = document.createElement('div');
           div.className = 'notif-item';
-          div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+          div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5 style="margin-bottom:4px;">${n.title}</h5><p>${n.body}</p></div>`;
           list.appendChild(div);
         });
       }

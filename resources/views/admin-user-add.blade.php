@@ -38,8 +38,9 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
-        </div>
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
       </div>
     </header>
 
@@ -64,7 +65,10 @@
             <span id="preview-badge" class="badge badge-active" style="margin-left:auto;">Active</span>
           </div>
 
-          <h2 class="admin-form-title">👤 Personal Information</h2>
+          <h2 class="admin-form-title" style="display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            Personal Information
+          </h2>
           <div class="admin-form-group">
             <label class="admin-form-label">Full Name <span style="color:#ef4444;">*</span></label>
             <input type="text" id="add-name" name="name" class="admin-form-input" placeholder="e.g. Dr. Julian Harrison" value="{{ old('name') }}" required>
@@ -86,8 +90,9 @@
             </div>
           </div>
 
-          <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-            🏥 Organisational Details
+          <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><path d="M3 21h18"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path><path d="M9 21v-4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v4"></path><path d="M10 9h4"></path><path d="M12 7v4"></path></svg>
+            Organisational Details
           </h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
             <div class="admin-form-group">
@@ -109,8 +114,9 @@
             </div>
           </div>
 
-          <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-            🔐 Account Setup
+          <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Account Setup
           </h2>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
             <div class="admin-form-group">
@@ -125,13 +131,18 @@
               </small>
             </div>
           </div>
-          <p style="font-size:12px;color:var(--text-gray);margin-top:-12px;margin-bottom:24px;">
-            ℹ The user will be asked to change this password on first login.
+          
+          <p style="font-size:12px;color:var(--text-gray);margin-top:-12px;margin-bottom:24px;display:flex;align-items:center;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            The user will be asked to change this password on first login.
           </p>
 
           <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:flex-end;gap:16px;align-items:center;">
             <a href="{{ url('/admin/users') }}" style="font-size:14px;font-weight:600;color:var(--text-gray);">Cancel</a>
-            <button type="submit" class="btn btn-primary">➕ Create User</button>
+            <button type="submit" class="btn btn-primary" style="display:flex;align-items:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+              Create User
+            </button>
           </div>
         </form>
       </div>

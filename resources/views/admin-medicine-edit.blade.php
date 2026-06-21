@@ -30,7 +30,9 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
       </div>
     </header>
@@ -45,13 +47,22 @@
             <p id="subtitle">Update stock records for <strong>{{ $medicine->med_name }}</strong></p>
           </div>
           <div style="display:flex;gap:12px;">
-            <a href="{{ url('/admin/inventory') }}" class="btn btn-outline">← Discard</a>
-            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+            <a href="{{ url('/admin/inventory') }}" class="btn btn-outline" style="display:flex;align-items:center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+              Discard
+            </a>
+            <button type="submit" class="btn btn-primary" style="display:flex;align-items:center;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Save Changes
+            </button>
           </div>
         </div>
 
         <div class="admin-form-container">
-          <h2 class="admin-form-title"><span style="color:var(--primary-green);">📄</span> General Information</h2>
+          <h2 class="admin-form-title" style="display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            General Information
+          </h2>
           <div class="admin-form-group">
             <label class="admin-form-label">Medicine Name <span style="color:#ef4444;">*</span></label>
             <input type="text" name="name" class="admin-form-input" value="{{ $medicine->med_name }}" required>
@@ -76,7 +87,10 @@
         </div>
 
         <div class="admin-form-container">
-          <h2 class="admin-form-title"><span style="color:var(--primary-green);">📦</span> Inventory Logistics</h2>
+          <h2 class="admin-form-title" style="display:flex;align-items:center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Inventory Logistics
+          </h2>
           <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
             <div class="admin-form-group">
               <label class="admin-form-label">Unit Type</label>
@@ -99,7 +113,7 @@
           </div>
 
           <div style="display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:8px;background:#fffbeb;border:1px solid #fbd38d;margin-top:8px;">
-            <span style="color:#ea580c;font-size:18px;flex-shrink:0;">ⓘ</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ea580c;flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             <div>
               <h4 style="font-size:14px;margin-bottom:4px;">Compliance Note</h4>
               <p style="font-size:13px;color:var(--text-gray);">Manual stock changes create an audit trail entry. Ensure physical counts have been reconciled before saving.</p>
@@ -107,7 +121,7 @@
           </div>
         </div>
       </form>
-      </main>
+    </main>
   </div>
 
   <script>

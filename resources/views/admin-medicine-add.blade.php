@@ -30,7 +30,9 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
     </header>
 
@@ -42,9 +44,10 @@
       <form action="{{ route('medicine.store') }}" method="POST" class="admin-form-container">
         @csrf
 
-        <!-- Live Preview (Biarin aja) -->
         <div style="background:var(--bg-gray);border-radius:12px;padding:20px;margin-bottom:32px;display:flex;align-items:center;gap:16px;border:1px solid var(--border);">
-          <div id="preview-icon" style="width:48px;height:48px;background:var(--light-green);color:var(--primary-green);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">💊</div>
+          <div id="preview-icon" style="width:48px;height:48px;background:var(--light-green);color:var(--primary-green);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+          </div>
           <div style="flex:1;">
             <h3 id="preview-name" style="font-size:17px;margin-bottom:4px;color:var(--dark-navy);">New Medicine</h3>
             <p id="preview-sub" style="font-size:13px;color:var(--text-gray);">Fill in the form below</p>
@@ -52,8 +55,10 @@
           <span id="preview-badge" class="badge badge-active">In Stock</span>
         </div>
 
-        <!-- Basic Info -->
-        <h2 class="admin-form-title"><span style="color:var(--primary-green);">📄</span> Basic Information</h2>
+        <h2 class="admin-form-title" style="display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Basic Information
+        </h2>
         <div class="admin-form-group">
           <label class="admin-form-label">Medicine Name <span style="color:#ef4444;">*</span></label>
           <input type="text" id="add-name" name="name" class="admin-form-input" placeholder="e.g., Amoxicillin 500mg" required>
@@ -78,8 +83,10 @@
           </div>
         </div>
 
-        <!-- Logistics -->
-        <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);"><span style="color:var(--primary-green);">📦</span> Logistics &amp; Stock</h2>
+        <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+          Logistics &amp; Stock
+        </h2>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;">
           <div class="admin-form-group">
             <label class="admin-form-label">Unit Type</label>
@@ -101,8 +108,10 @@
           </div>
         </div>
 
-        <!-- Notes -->
-        <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);"><span style="color:var(--primary-green);">📝</span> Additional Details</h2>
+        <h2 class="admin-form-title" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-green);margin-right:8px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          Additional Details
+        </h2>
         <div class="admin-form-group" style="margin-bottom:0;">
           <label class="admin-form-label">Description / Notes</label>
           <textarea id="add-desc" name="description" class="admin-form-input" placeholder="Storage requirements, usage warnings, clinical notes…" style="min-height:100px;resize:vertical;"></textarea>
@@ -110,7 +119,11 @@
 
         <div style="border-top:1px solid var(--border);padding-top:24px;margin-top:32px;display:flex;justify-content:flex-end;gap:16px;align-items:center;">
           <a href="{{ url('/admin/inventory') }}" style="font-size:14px;font-weight:600;color:var(--text-gray);">Cancel</a>
-          <button type="submit" class="btn btn-primary">💾 Save Medicine</button>
+          
+          <button type="submit" class="btn btn-primary" style="display:flex;align-items:center;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Medicine
+          </button>
         </div>
       </form>
     </main>

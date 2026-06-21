@@ -101,7 +101,9 @@
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" id="topbarSearch" placeholder="Search users…">
         </div>
-        <div style="color:var(--text-gray);cursor:pointer;">🔔</div>
+        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
         <div class="admin-profile">
           <div class="admin-info">
             <h4>{{ Auth::user()->user_name }}</h4>
@@ -110,8 +112,11 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
+      </div>
     </header>
 
     <main class="content-area">
@@ -143,7 +148,10 @@
           <h1>Account Directory</h1>
           <p>Manage all registered campus users and their system access.</p>
         </div>
-        <a href="/admin/users/add" class="btn btn-primary">➕ New User</a>
+        <a href="/admin/users/add" class="btn btn-primary" style="display:flex;align-items:center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          New User
+        </a>
       </div>
 
       <div class="table-container">
@@ -212,10 +220,14 @@
                         <button class="action-menu-btn">⋯</button>
                         <div class="action-dropdown">
                           <a href="{{ url('/admin/users/edit?id='.$user->id_user) }}" style="text-decoration:none; display:block;">
-                              <button type="button" style="width:100%; text-align:left;">✏️ Edit Profile</button>
+                              <button type="button" style="width:100%; text-align:left;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;color:#64748b;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                Edit Profile
+                              </button>
                           </a>
                           <button type="button" class="danger" onclick="munculinModalDelete('{{ $user->id_user }}', '{{ $user->user_name }}')">
-                              🗑 Delete User
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                              Delete User
                           </button>
                       </div>
                     </div>
@@ -225,27 +237,31 @@
         </tbody>
         </table>
 
-        <!-- Empty state -->
         <div id="emptyState" class="empty-state" style="display:none;">
-          <div style="font-size:40px;margin-bottom:16px;">🔍</div>
+          <div style="margin-bottom:16px;color:#cbd5e1;display:flex;justify-content:center;">
+             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
           <h3>No users found</h3>
           <p>Try adjusting your search or filter criteria.</p>
         </div>
 
-        <!-- Pagination info -->
         <div class="flex-between" style="padding:16px 24px;border-top:1px solid var(--border);">
           <span id="paginationInfo" style="font-size:13px;color:var(--text-gray);"></span>
-          <a href="/admin/users/add" class="btn btn-primary" style="padding:8px 16px;">➕ Add New User</a>
+          <a href="/admin/users/add" class="btn btn-primary" style="padding:8px 16px;display:flex;align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add New User
+          </a>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Delete Confirm Modal -->
   <div id="deleteModal" class="delete-modal-overlay">
     <div class="delete-modal">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <div style="width:40px;height:40px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🗑</div>
+        <div style="width:40px;height:40px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ef4444;flex-shrink:0;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </div>
         <h2 style="font-size:18px;color:var(--dark-navy);">Delete User</h2>
       </div>
       <p style="color:var(--text-gray);font-size:14px;margin-bottom:8px;line-height:1.6;">
@@ -343,7 +359,6 @@
   const bellWrap = document.querySelector('.bell-wrapper, .icon-btn');
   if (!bellWrap) return;
 
-  // Build notification data from app-data
   function getNotifs() {
     const meds = window.AppData?.getMedicines?.() || [];
     const scheds = window.AppData?.getSchedules?.() || [];
@@ -351,22 +366,23 @@
     const notifs = [];
 
     meds.filter(m => m.status !== 'in_stock').forEach(m => {
-      notifs.push({ color:'#f97316', title: m.status === 'out_of_stock' ? '❌ Out of Stock' : '⚠️ Low Stock', body: `${m.name} — ${m.stock} units remaining` });
+      const isOut = m.status === 'out_of_stock';
+      const icon = isOut ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>' : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+      notifs.push({ color:'#f97316', title: `<span style="display:flex;align-items:center;">${icon} ${isOut ? 'Out of Stock' : 'Low Stock'}</span>`, body: `${m.name} — ${m.stock} units remaining` });
     });
     scheds.filter(s => s.status === 'leave').forEach(s => {
-      notifs.push({ color:'#3b82f6', title:'🏖 Doctor On Leave', body: `${s.doctor} — ${s.department}` });
+      notifs.push({ color:'#3b82f6', title:'<span style="display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Doctor On Leave</span>', body: `${s.doctor} — ${s.department}` });
     });
     patients.filter(p => p.status === 'waiting').slice(0,2).forEach(p => {
-      notifs.push({ color:'#529b2e', title:'👤 Patient Waiting', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
+      notifs.push({ color:'#529b2e', title:'<span style="display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Patient Waiting</span>', body: `${p.name} — Queue ${p.queue} • ${p.time}` });
     });
-    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications.' });
+    if (!notifs.length) notifs.push({ color:'#94a3b8', title:'<span style="display:flex;align-items:center;color:#059669;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> All Clear</span>', body: 'No new notifications.' });
     return notifs.slice(0, 6);
   }
 
-  // Create panel
   const panel = document.createElement('div');
   panel.className = 'notif-panel';
-  panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+  panel.innerHTML = '<div class="notif-header"><h4 style="display:flex;align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
   bellWrap.style.position = 'relative';
   bellWrap.appendChild(panel);
 
@@ -377,12 +393,11 @@
     getNotifs().forEach(n => {
       const div = document.createElement('div');
       div.className = 'notif-item';
-      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5>${n.title}</h5><p>${n.body}</p></div>`;
+      div.innerHTML = `<div class="notif-dot" style="background:${n.color};"></div><div><h5 style="margin-bottom:4px;">${n.title}</h5><p>${n.body}</p></div>`;
       list.appendChild(div);
     });
   }
 
-  // Toggle
   const bellEl = bellWrap.querySelector('.bell, .icon-btn') || bellWrap;
   bellWrap.addEventListener('click', e => {
     e.stopPropagation();
@@ -392,6 +407,7 @@
   document.addEventListener('click', () => panel.classList.remove('open'));
   document.getElementById('clearNotifs')?.addEventListener('click', () => { panel.classList.remove('open'); });
 })();
+
 </script>
 <script>
     document.addEventListener('click', e => {

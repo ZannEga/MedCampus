@@ -38,7 +38,11 @@
       <div class="breadcrumb">Admin &rsaquo; <span>Dashboard</span></div>
       <div class="topbar-right">
         <div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" placeholder="Search…"></div>
-        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;">🔔</div>
+        
+        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+
         <div class="admin-profile">
           <div class="admin-info">
             <h4>{{ Auth::user()->user_name }}</h4>
@@ -47,7 +51,10 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
       </div>
     </header>
@@ -61,7 +68,9 @@
       <div class="grid-3" style="margin-bottom:32px;">
         <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
           <div class="flex-between" style="margin-bottom:24px;">
-            <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">👤</div>
+            <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
             <span class="badge badge-active">{{ $activeUsers }} Active</span>
           </div>
           <p style="font-size:12px;font-weight:700;color:var(--text-gray);text-transform:uppercase;letter-spacing:1px;">Registered Users</p>
@@ -70,7 +79,9 @@
 
         <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
           <div class="flex-between" style="margin-bottom:24px;">
-            <div style="width:40px;height:40px;background:#fff7ed;color:#ea580c;border-radius:8px;display:flex;align-items:center;justify-content:center;">💊</div>
+            <div style="width:40px;height:40px;background:#fff7ed;color:#ea580c;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+            </div>
             @if($lowStockMeds > 0)
                 <span class="badge badge-warning">{{ $lowStockMeds }} Low/Out</span>
             @else
@@ -83,7 +94,9 @@
 
         <div class="card" style="display:flex;flex-direction:column;justify-content:space-between;">
           <div class="flex-between" style="margin-bottom:24px;">
-            <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">📅</div>
+            <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
             <span class="badge badge-active">Live System</span>
           </div>
           <p style="font-size:12px;font-weight:700;color:var(--text-gray);text-transform:uppercase;letter-spacing:1px;">Total Schedules</p>
@@ -128,15 +141,21 @@
 
       <div class="grid-3" style="margin-top:8px;">
         <a href="{{ url('/admin/users') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:16px;padding:20px;transition:.2s;" onmouseover="this.style.borderColor='var(--primary-green)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">👥</div>
+          <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
           <div><h4 style="font-size:14px;">Manage Users</h4><p style="font-size:12px;color:var(--text-gray);">Add, edit or suspend accounts</p></div>
         </a>
         <a href="{{ url('/admin/inventory') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:16px;padding:20px;transition:.2s;" onmouseover="this.style.borderColor='var(--primary-green)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="width:40px;height:40px;background:#fff7ed;color:#ea580c;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">💊</div>
+          <div style="width:40px;height:40px;background:#fff7ed;color:#ea580c;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+          </div>
           <div><h4 style="font-size:14px;">Medicine Inventory</h4><p style="font-size:12px;color:var(--text-gray);">Track and update stock levels</p></div>
         </a>
         <a href="{{ url('/admin/schedules') }}" class="card" style="text-decoration:none;display:flex;align-items:center;gap:16px;padding:20px;transition:.2s;" onmouseover="this.style.borderColor='var(--primary-green)'" onmouseout="this.style.borderColor='var(--border)'">
-          <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">📅</div>
+          <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
           <div><h4 style="font-size:14px;">Clinical Schedules</h4><p style="font-size:12px;color:var(--text-gray);">Manage doctor rosters and shifts</p></div>
         </a>
       </div>
@@ -192,7 +211,7 @@
 
       const panel = document.createElement('div');
       panel.className = 'notif-panel';
-      panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+      panel.innerHTML = '<div class="notif-header"><h4 style="display:flex;align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
       bellWrap.style.position = 'relative';
       bellWrap.appendChild(panel);
 
@@ -200,7 +219,7 @@
         const list = document.getElementById('notifList');
         if (!list) return;
         list.innerHTML = '';
-        const notifs = [{ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications right now.' }];
+        const notifs = [{ color:'#94a3b8', title:'<span style="display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;color:#059669;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> All Clear</span>', body: 'No new notifications right now.' }];
         notifs.forEach(n => {
           const div = document.createElement('div');
           div.className = 'notif-item';

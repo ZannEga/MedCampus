@@ -47,7 +47,12 @@
       <div class="breadcrumb">Admin &rsaquo; <span>Inventory</span></div>
       <div class="topbar-right">
         <div class="search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg><input type="text" id="searchInput" placeholder="Search medicines…"></div>
-        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;">🔔</div>
+        
+        <!-- ICON BELL -->
+        <div class="bell-wrapper" style="color:var(--text-gray);cursor:pointer;display:flex;align-items:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </div>
+
         <div class="admin-profile">
           <div class="admin-info">
             <h4>{{ Auth::user()->user_name }}</h4>
@@ -56,7 +61,10 @@
           <div class="admin-avatar">
             <img src="https://placehold.co/40x40/94a3b8/fff?text={{ strtoupper(substr(Auth::user()->user_name, 0, 2)) }}" alt="Avatar" style="width:100%;">
           </div>
-          <a href="{{ url('/logout') }}" title="Keluar" style="background:none;border:1px solid #fecaca;color:#ef4444;font-size:12px;font-weight:600;padding:5px 10px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;">↩</a>
+          <!-- ICON LOGOUT -->
+          <a href="{{ url('/logout') }}" title="Keluar" style="background:#fef2f2;border:1px solid #fecaca;color:#ef4444;padding:6px;border-radius:6px;cursor:pointer;margin-left:8px;text-decoration:none;display:flex;align-items:center;transition:0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </a>
         </div>
       </div>
     </header>
@@ -65,7 +73,8 @@
       @if(session('success'))
       <div id="successAlert" style="background-color: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
           <div style="display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 20px;">✅</span>
+              <!-- ICON CHECK ALERT -->
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
               <span style="font-size: 14px; font-weight: 600;">{{ session('success') }}</span>
           </div>
           <button onclick="document.getElementById('successAlert').style.display='none'" style="background: none; border: none; cursor: pointer; font-size: 18px; color: #065f46; opacity: 0.7;">✕</button>
@@ -90,21 +99,34 @@
             <option value="low_stock">Low Stock</option>
             <option value="out_of_stock">Out of Stock</option>
           </select>
-          <a href="{{ url('/admin/medicine/add') }}" class="btn btn-primary">➕ Add Medicine</a>
+          <!-- ICON PLUS BUTTON -->
+          <a href="{{ url('/admin/medicine/add') }}" class="btn btn-primary" style="display:flex;align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Medicine
+          </a>
         </div>
       </div>
 
       <div class="grid-3" style="margin-bottom:24px;">
         <div class="card" style="padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:0;">
-          <div style="width:40px;height:40px;background:var(--light-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">💊</div>
+          <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <!-- ICON MEDICINE / PILL -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+          </div>
           <div><p style="font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;letter-spacing:.5px;">Total SKUs</p><h2 style="font-size:28px;line-height:1.2;">{{ $totalMeds }}</h2></div>
         </div>
         <div class="card" style="padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:0;">
-          <div style="width:40px;height:40px;background:#fef3c7;border-radius:8px;display:flex;align-items:center;justify-content:center;">⚠️</div>
+          <div style="width:40px;height:40px;background:#fef3c7;color:#d97706;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <!-- ICON WARNING -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </div>
           <div><p style="font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;letter-spacing:.5px;">Low Stock</p><h2 style="font-size:28px;line-height:1.2;color:#d97706;">{{ $lowStock }}</h2></div>
         </div>
         <div class="card" style="padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:0;">
-          <div style="width:40px;height:40px;background:#fee2e2;border-radius:8px;display:flex;align-items:center;justify-content:center;">❌</div>
+          <div style="width:40px;height:40px;background:#fee2e2;color:#ef4444;border-radius:8px;display:flex;align-items:center;justify-content:center;">
+            <!-- ICON OUT OF STOCK (X) -->
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+          </div>
           <div><p style="font-size:11px;font-weight:700;color:var(--text-gray);text-transform:uppercase;letter-spacing:.5px;">Out of Stock</p><h2 style="font-size:28px;line-height:1.2;color:#ef4444;">{{ $outOfStock }}</h2></div>
         </div>
       </div>
@@ -117,7 +139,10 @@
             <tr>
               <td>
                 <div style="display:flex;align-items:center;gap:12px;">
-                  <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">💊</div>
+                  <div style="width:40px;height:40px;background:var(--light-green);color:var(--primary-green);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <!-- ICON MEDICINE LIST -->
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+                  </div>
                   <div>
                     <h4 style="font-size:14px;color:var(--dark-navy);">{{ $med->med_name }}</h4>
                     <p style="font-size:12px;color:var(--text-gray);">ID: {{ $med->id_med }}</p>
@@ -139,9 +164,15 @@
                 @endif
               </td>
               <td>
-                <div class="action-menu">
-                  <a href="{{ url('/admin/medicine/edit/' . $med->id_med) }}" style="text-decoration:none; margin-right:8px;" title="Edit">✏️</a>
-                  <a href="javascript:void(0)" onclick="openDeleteModal('{{ url('/admin/medicine/delete/' . $med->id_med) }}')" style="text-decoration:none; color:#ef4444;" title="Delete">🗑</a>
+                <div class="action-menu" style="display:flex;gap:12px;">
+                  <!-- ICON EDIT -->
+                  <a href="{{ url('/admin/medicine/edit/' . $med->id_med) }}" style="text-decoration:none;color:#64748b;display:flex;align-items:center;" title="Edit">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                  </a>
+                  <!-- ICON TRASH -->
+                  <a href="javascript:void(0)" onclick="openDeleteModal('{{ url('/admin/medicine/delete/' . $med->id_med) }}')" style="text-decoration:none;color:#ef4444;display:flex;align-items:center;" title="Delete">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                  </a>
                 </div>
               </td>
             </tr>
@@ -150,14 +181,19 @@
         </table>
         
         <div id="emptyState" style="text-align:center;padding:60px 24px;color:var(--text-gray);display:none;">
-          <div style="font-size:40px;margin-bottom:12px;">💊</div>
+          <div style="margin-bottom:12px;color:#cbd5e1;display:flex;justify-content:center;">
+             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"></path><path d="m8.5 8.5 7 7"></path></svg>
+          </div>
           <h3 style="color:var(--dark-navy);margin-bottom:8px;">No medicines found</h3>
           <p>Try adjusting your search or filter.</p>
         </div>
         
         <div class="flex-between" style="padding:16px 24px;border-top:1px solid var(--border);">
           <span id="countLabel" style="font-size:13px;color:var(--text-gray);"></span>
-          <a href="{{ url('/admin/medicine/add') }}" class="btn btn-primary" style="padding:8px 16px;">➕ Add Medicine</a>
+          <a href="{{ url('/admin/medicine/add') }}" class="btn btn-primary" style="padding:8px 16px;display:flex;align-items:center;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Add Medicine
+          </a>
         </div>
       </div>
     </main>
@@ -165,7 +201,9 @@
     <div id="customDeleteModal" class="del-overlay">
       <div class="del-card">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">
-          <div style="width:48px;height:48px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:#ef4444;flex-shrink:0;">🗑</div>
+          <div style="width:48px;height:48px;background:#fee2e2;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#ef4444;flex-shrink:0;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+          </div>
           <h2 style="font-size:20px;font-weight:700;color:var(--dark-navy);margin:0;">Delete Medicine</h2>
         </div>
         <p style="color:#475569;font-size:15px;margin-bottom:12px;line-height:1.5;">Are you sure you want to permanently delete this medicine data?</p>
@@ -176,7 +214,6 @@
         </div>
       </div>
     </div>
-  </div>
 
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('js/admin.js') }}"></script>
@@ -236,7 +273,7 @@
 
       const panel = document.createElement('div');
       panel.className = 'notif-panel';
-      panel.innerHTML = '<div class="notif-header"><h4>🔔 Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
+      panel.innerHTML = '<div class="notif-header"><h4 style="display:flex;align-items:center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg> Notifications</h4><span id="clearNotifs">Mark all read</span></div><div id="notifList"></div>';
       bellWrap.style.position = 'relative';
       bellWrap.appendChild(panel);
 
@@ -244,7 +281,7 @@
         const list = document.getElementById('notifList');
         if (!list) return;
         list.innerHTML = '';
-        const notifs = [{ color:'#94a3b8', title:'✅ All Clear', body: 'No new notifications right now.' }];
+        const notifs = [{ color:'#94a3b8', title:'<span style="display:flex;align-items:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;color:#059669;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> All Clear</span>', body: 'No new notifications right now.' }];
         notifs.forEach(n => {
           const div = document.createElement('div');
           div.className = 'notif-item';
