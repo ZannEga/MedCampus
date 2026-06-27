@@ -218,13 +218,15 @@
       });
     });
 
+    let selectedScheduleId = null;
+
     function fetchShifts() {
         const dateRaw = document.getElementById('appointmentDate').value;
         const slotGrid = document.getElementById('slotGrid');
         
         if (!selectedDoctorId || !dateRaw) return;
 
-        slotGrid.innerHTML = '<div style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-gray); font-style:italic;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Checking doctor availability...</div>';
+        slotGrid.innerHTML = '<div style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-gray); font-style:italic;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-animation"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="4.93" x2="19.07" y2="7.76"></line></svg> Generating time slots...</div>';
         selectedSlot = null;
         document.getElementById('summary-slot').textContent = '—';
 
@@ -234,41 +236,37 @@
                 slotGrid.innerHTML = '';
 
                 if (data.length === 0) {
-                    slotGrid.innerHTML = '<div style="grid-column: 1 / -1; display:flex; align-items:center; gap:8px; font-size:13px; color:#ef4444; font-weight:700;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg> No shifts available for this doctor on the selected date.</div>';
+                    slotGrid.innerHTML = '<div style="grid-column: 1 / -1; font-size:13px; color:#ef4444; font-weight:700;">No schedule available on this date.</div>';
                     return;
                 }
 
-                data.forEach((jadwal, index) => {
-                    let timeLabel = 'Available';
-                    let sName = jadwal.shift.toLowerCase();
-                    
-                    if(sName.includes('morning')) timeLabel = '08:00 - 12:00';
-                    else if(sName.includes('afternoon')) timeLabel = '13:00 - 17:00';
-                    else if(sName.includes('evening')) timeLabel = '18:00 - 21:00';
-                    else timeLabel = jadwal.shift;
-
+                data.forEach((slotData) => {
                     const div = document.createElement('div');
-                    div.className = 'select-card' + (index === 0 ? ' active' : '');
-                    div.dataset.slot = jadwal.shift;
-                    div.style.cssText = 'text-align:center;padding:12px;';
-                    div.innerHTML = `
-                        <h4 style="margin:0;text-transform:capitalize;">${jadwal.shift}</h4>
-                        <p style="color:var(--primary-green);">${timeLabel}</p>
-                    `;
-
-                    div.addEventListener('click', () => {
-                        document.querySelectorAll('#slotGrid .select-card').forEach(c => c.classList.remove('active'));
-                        div.classList.add('active');
-                        selectedSlot = jadwal.shift;
-                        document.getElementById('summary-slot').textContent = jadwal.shift + ' (' + timeLabel + ') WIB';
-                    });
-
-                    slotGrid.appendChild(div);
-
-                    if(index === 0) {
-                        selectedSlot = jadwal.shift;
-                        document.getElementById('summary-slot').textContent = jadwal.shift + ' (' + timeLabel + ') WIB';
+                    
+                    if (slotData.is_booked) {
+                        div.className = 'select-card disabled';
+                        div.style.cssText = 'text-align:center;padding:12px;opacity:0.5;cursor:not-allowed;background:#f1f5f9;border:1px solid var(--border);border-radius:12px;';
+                        div.innerHTML = `<h4 style="margin:0;color:#94a3b8;">${slotData.time}</h4><p style="color:#ef4444;font-size:11px;margin:0;margin-top:4px;font-weight:600;">Booked</p>`;
+                    } else {
+                        div.className = 'select-card';
+                        div.dataset.time = slotData.time;
+                        div.style.cssText = 'text-align:center;padding:12px;cursor:pointer;border:1px solid var(--border);border-radius:12px;transition:.2s;';
+                        div.innerHTML = `<h4 style="margin:0;">${slotData.time}</h4><p style="color:var(--primary-green);font-size:11px;margin:0;margin-top:4px;font-weight:600;">Available</p>`;
+                        
+                        div.addEventListener('click', () => {
+                            document.querySelectorAll('#slotGrid .select-card:not(.disabled)').forEach(c => {
+                                c.style.borderColor = 'var(--border)';
+                                c.style.background = 'transparent';
+                            });
+                            div.style.borderColor = 'var(--primary-green)';
+                            div.style.background = 'var(--light-green)';
+                            
+                            selectedSlot = slotData.time;
+                            selectedScheduleId = slotData.id_schedule;
+                            document.getElementById('summary-slot').textContent = slotData.time + ' WIB';
+                        });
                     }
+                    slotGrid.appendChild(div);
                 });
             })
             .catch(err => {
@@ -352,8 +350,8 @@
         specialty: selectedDoctorSpec,
         date_raw: date,
         date: document.getElementById('summary-date').textContent,
-        slot: selectedSlot,
-        slot_display: document.getElementById('summary-slot').textContent,
+        time: selectedSlot, 
+        id_schedule: selectedScheduleId, 
         fee: formatRp(consultationFee), 
         adminFee: formatRp(adminFee), 
         total: formatRp(totalFee)

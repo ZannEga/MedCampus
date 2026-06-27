@@ -124,10 +124,8 @@
           @csrf
           <input type="hidden" name="doctor_id" id="form_doctor_id">
           <input type="hidden" name="date_raw" id="form_date_raw">
-          <input type="hidden" name="schedule_date" id="form_schedule_date">
-          <input type="hidden" name="slot" id="form_slot">
-          <input type="hidden" name="shift" id="form_shift">
-          <input type="hidden" name="clinic" id="form_clinic">
+          <input type="hidden" name="booking_time" id="form_booking_time">
+          <input type="hidden" name="id_schedule" id="form_id_schedule">
 
           <h3 style="margin-bottom:24px;">Bill Breakdown</h3>
           <div class="flex-between" style="margin-bottom:16px;font-size:14px;">
@@ -164,7 +162,7 @@
       document.getElementById('co-doctor').textContent      = booking.doctor;
       document.getElementById('co-doctor-spec').textContent = booking.specialty;
       document.getElementById('co-date').textContent        = booking.date;
-      document.getElementById('co-slot').textContent        = booking.slot_display || (booking.slot + ' WIB');
+      document.getElementById('co-slot').textContent        = booking.time + ' WIB';
       document.getElementById('co-fee').textContent         = booking.fee;
       document.getElementById('co-admin-fee').textContent   = booking.adminFee;
       document.getElementById('co-total').textContent       = booking.total;
@@ -172,16 +170,8 @@
 
       document.getElementById('form_doctor_id').value = booking.doctor_id;
       document.getElementById('form_date_raw').value = booking.date_raw;
-      
-      const formScheduleDate = document.getElementById('form_schedule_date');
-      if (formScheduleDate) formScheduleDate.value = booking.date_raw;
-      
-      document.getElementById('form_slot').value = booking.slot;
-      
-      const formShift = document.getElementById('form_shift');
-      if (formShift) formShift.value = booking.slot;
-      
-      document.getElementById('form_clinic').value = booking.clinic;
+      document.getElementById('form_booking_time').value = booking.time;
+      document.getElementById('form_id_schedule').value = booking.id_schedule;
     }
   </script>
 

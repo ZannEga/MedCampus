@@ -30,19 +30,7 @@ class PatientController extends Controller
 
         $estimatedTime = '—';
         if ($activeQueue) {
-            $waktuMulai = strtotime('08:00');
-            
-            if (stripos($activeQueue->shift, 'afternoon') !== false) {
-                $waktuMulai = strtotime('13:00');
-            } elseif (stripos($activeQueue->shift, 'evening') !== false) {
-                $waktuMulai = strtotime('18:00');
-            } elseif (strpos($activeQueue->shift, '-') !== false) {
-                $shiftParts = explode('-', $activeQueue->shift);
-                $waktuMulai = strtotime(trim($shiftParts[0]));
-            }
-            
-            $tambahanMenit = ($activeQueue->queue_number - 1) * 30;
-            $estimatedTime = date('H:i', strtotime("+$tambahanMenit minutes", $waktuMulai));
+            $estimatedTime = $activeQueue->booking_time ? date('H:i', strtotime($activeQueue->booking_time)) : '—';
         }
 
         return view('dashboard', compact('activeQueue', 'estimatedTime'));
@@ -95,17 +83,7 @@ class PatientController extends Controller
             return redirect('/patient/dashboard');
         }
 
-        $waktuMulai = strtotime('08:00');
-        if (stripos($activeQueue->shift, 'afternoon') !== false) {
-            $waktuMulai = strtotime('13:00');
-        } elseif (stripos($activeQueue->shift, 'evening') !== false) {
-            $waktuMulai = strtotime('18:00');
-        } elseif (strpos($activeQueue->shift, '-') !== false) {
-            $shiftParts = explode('-', $activeQueue->shift);
-            $waktuMulai = strtotime(trim($shiftParts[0]));
-        }
-        $tambahanMenit = ($activeQueue->queue_number - 1) * 30;
-        $estimatedTime = date('H:i', strtotime("+$tambahanMenit minutes", $waktuMulai));
+        $estimatedTime = $activeQueue->booking_time ? date('H:i', strtotime($activeQueue->booking_time)) : '—';
 
         return view('ticket', compact('activeQueue', 'estimatedTime'));
     }
@@ -135,17 +113,7 @@ class PatientController extends Controller
             return redirect('/patient/dashboard');
         }
 
-        $waktuMulai = strtotime('08:00');
-        if (stripos($activeQueue->shift, 'afternoon') !== false) {
-            $waktuMulai = strtotime('13:00');
-        } elseif (stripos($activeQueue->shift, 'evening') !== false) {
-            $waktuMulai = strtotime('18:00');
-        } elseif (strpos($activeQueue->shift, '-') !== false) {
-            $shiftParts = explode('-', $activeQueue->shift);
-            $waktuMulai = strtotime(trim($shiftParts[0]));
-        }
-        $tambahanMenit = ($activeQueue->queue_number - 1) * 30;
-        $estimatedTime = date('H:i', strtotime("+$tambahanMenit minutes", $waktuMulai));
+        $estimatedTime = $activeQueue->booking_time ? date('H:i', strtotime($activeQueue->booking_time)) : '—';
 
         $aheadCount = DB::table('appointments')
             ->where('id_schedule', $activeQueue->id_schedule)
@@ -279,31 +247,9 @@ class PatientController extends Controller
     public function storeBooking(Request $request)
     {
         $userId = Auth::user()->id_user;
-
-        $doctorId = $request->input('doctor_id');
         $dateRaw = $request->input('date_raw');
-        $shiftName = $request->input('slot'); 
-        $clinicName = $request->input('clinic');
-
-        $schedule = DB::table('doctor_schedules')
-            ->where('id_user', $doctorId)
-            ->whereDate('schedule_date', $dateRaw)
-            ->where('shift', 'LIKE', "%$shiftName%")
-            ->first();
-
-        if (!$schedule) {
-            $idSchedule = 'SC-' . rand(100000, 999999);
-            DB::table('doctor_schedules')->insert([
-                'id_schedule'   => $idSchedule,
-                'id_user'       => $doctorId,
-                'schedule_date' => $dateRaw,
-                'shift'         => $shiftName,
-                'room'          => $clinicName . ' - R.101',
-                'quota'         => 50
-            ]);
-        } else {
-            $idSchedule = $schedule->id_schedule;
-        }
+        $timeSlot = $request->input('booking_time'); // Kolom baru kita
+        $idSchedule = $request->input('id_schedule'); 
 
         $lastQueue = DB::table('appointments')
             ->where('id_schedule', $idSchedule)
@@ -318,8 +264,11 @@ class PatientController extends Controller
             'id_user'          => $userId,
             'id_schedule'      => $idSchedule,
             'appointment_date' => $dateRaw,
+            'booking_time'     => $timeSlot, 
             'queue_number'     => $newQueue,
             'status'           => 'W',
+            'created_at'       => now(),
+            'updated_at'       => now()
         ]);
 
         return redirect('/patient/dashboard');
@@ -343,11 +292,60 @@ class PatientController extends Controller
         $doctorId = $request->query('doctor_id');
         $date = $request->query('date');
 
-        $shifts = DB::table('doctor_schedules')
+        // Tarik jadwal shift dokter dari database
+        $schedules = DB::table('doctor_schedules')
             ->where('id_user', $doctorId)
             ->whereDate('schedule_date', $date)
             ->get();
 
-        return response()->json($shifts);
+        $availableSlots = [];
+
+        foreach ($schedules as $schedule) {
+            $start = '08:00'; $end = '14:00';
+            $sName = strtolower($schedule->shift);
+            
+            // SINKRONISASI DENGAN JAM ADMIN
+            if (str_contains($sName, 'morning')) { $start = '08:00'; $end = '14:00'; }
+            elseif (str_contains($sName, 'afternoon')) { $start = '14:00'; $end = '20:00'; }
+            elseif (str_contains($sName, 'evening')) { $start = '20:00'; $end = '02:00'; }
+            else {
+                $parts = explode('-', $schedule->shift);
+                if (count($parts) == 2) {
+                    $start = trim($parts[0]);
+                    $end = trim($parts[1]);
+                }
+            }
+
+            $bookedTimes = DB::table('appointments')
+                ->where('id_schedule', $schedule->id_schedule)
+                ->whereDate('appointment_date', $date)
+                ->whereIn('status', ['W', 'I'])
+                ->pluck('booking_time')
+                ->toArray();
+                
+            $bookedTimes = array_map(function($t) {
+                return $t ? date('H:i', strtotime($t)) : null;
+            }, $bookedTimes);
+
+            $startTime = strtotime($start);
+            $endTime = strtotime($end);
+
+            // PENYELAMAT BUG TENGAH MALAM (Shift Evening)
+            if ($endTime <= $startTime) {
+                $endTime = strtotime('+1 day', $endTime);
+            }
+
+            while ($startTime < $endTime) {
+                $timeStr = date('H:i', $startTime);
+                $availableSlots[] = [
+                    'id_schedule' => $schedule->id_schedule,
+                    'time'        => $timeStr,
+                    'is_booked'   => in_array($timeStr, $bookedTimes)
+                ];
+                $startTime = strtotime('+30 minutes', $startTime);
+            }
+        }
+
+        return response()->json($availableSlots);
     }
 }

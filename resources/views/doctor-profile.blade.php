@@ -106,7 +106,6 @@
             </h4>
             <div class="profile-info-grid">
               <div class="profile-info-item"><div class="label">Staff ID</div><div class="value">{{ Auth::user()->id_user }}</div></div>
-              <div class="profile-info-item"><div class="label">Specialty</div><div class="value">{{ Auth::user()->user_dept ?? 'General Medicine' }}</div></div>
               <div class="profile-info-item"><div class="label">Department</div><div class="value">{{ Auth::user()->user_dept ?? 'General Medicine' }}</div></div>
               <div class="profile-info-item"><div class="label">Clinic Room</div><div class="value">Poli Umum - R.101</div></div>
             </div>
@@ -138,22 +137,16 @@
                 <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 Personal Information
               </h3>
-              <div class="form-field">
-                <label for="editFullName">Full Name</label>
-                <input type="text" id="editFullName" name="user_name" value="{{ Auth::user()->user_name }}" required>
-              </div>
               <div class="form-grid-2">
                 <div class="form-field">
-                  <label for="editSpecialty">Specialty</label>
-                  <input type="text" id="editSpecialty" value="{{ Auth::user()->user_dept ?? '' }}">
+                  <label for="editFullName">Full Name</label>
+                  <input type="text" id="editFullName" name="user_name" value="{{ Auth::user()->user_name }}" required>
                 </div>
                 <div class="form-field">
                   <label for="editDepartment">Department</label>
                   <select id="editDepartment" name="user_dept">
-                    <option value="{{ Auth::user()->user_dept }}" selected>{{ Auth::user()->user_dept ?? 'General Medicine' }}</option>
-                    <option value="Cardiology">Cardiology</option>
-                    <option value="Neurology">Neurology</option>
-                    <option value="Pediatrics">Pediatrics</option>
+                    <option value="General Medicine" {{ Auth::user()->user_dept == 'General Medicine' ? 'selected' : '' }}>General Medicine</option>
+                    <option value="Dental Clinic" {{ Auth::user()->user_dept == 'Dental Clinic' ? 'selected' : '' }}>Dental Clinic</option>
                   </select>
                 </div>
               </div>

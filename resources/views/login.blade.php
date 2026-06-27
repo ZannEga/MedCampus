@@ -11,39 +11,6 @@
         document.documentElement.classList.add('dark-mode');
     }
   </script>
-  <style>
-    .role-badge {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
-      letter-spacing: 0.5px; text-transform: uppercase;
-      margin: 0 auto 20px; text-align: center;
-    }
-    .role-badge.patient { background: #e6f4ea; color: #529b2e; }
-    .role-badge.doctor  { background: #eff6ff; color: #2563eb; }
-    .role-badge.admin   { background: #fdf4ff; color: #9333ea; }
-
-    .btn-submit.doctor { background: #2563eb; }
-    .btn-submit.doctor:hover { background: #1d4ed8; }
-    .btn-submit.admin  { background: #9333ea; }
-    .btn-submit.admin:hover  { background: #7e22ce; }
-
-    .role-switcher {
-      display: flex; justify-content: center; gap: 8px;
-      margin-top: 20px; padding-top: 20px;
-      border-top: 1px solid var(--border);
-    }
-    .role-switch-btn {
-      font-size: 11px; font-weight: 600; padding: 5px 12px;
-      border-radius: 20px; text-decoration: none; color: var(--text-gray);
-      border: 1px solid var(--border); transition: all .2s;
-      background: white;
-    }
-    .role-switch-btn:hover { border-color: var(--text-gray); color: var(--dark-navy); }
-    .role-switch-btn.active-patient { background: #e6f4ea; color: #529b2e; border-color: #529b2e; }
-    .role-switch-btn.active-doctor  { background: #eff6ff; color: #2563eb; border-color: #2563eb; }
-    .role-switch-btn.active-admin   { background: #fdf4ff; color: #9333ea; border-color: #9333ea; }
-
-  </style>
 </head>
 <body class="auth-page">
   <a href="{{ url('/') }}" style="
@@ -63,11 +30,12 @@
 
   <main class="auth-container">
     <section class="auth-card">
-      <div style="text-align:center;">
-        <div id="roleBadge" class="role-badge"></div>
+      <div style="text-align:center; margin-bottom: 24px;">
+        <svg viewBox="0 0 24 24" style="width: 48px; height: 48px; color: var(--primary-green);"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
       </div>
 
-      <h1 id="pageTitle">Welcome Back</h1>
+      <h1 id="pageTitle" style="margin-bottom: 8px;">MedCampus Portal</h1>
+      <p style="text-align: center; color: var(--text-gray); font-size: 14px; margin-bottom: 32px;">Sign in to access your dashboard</p>
 
       <div class="auth-toggle" id="authToggle">
         <a href="{{ url('/login') }}" class="active" id="loginLink">Login</a>
@@ -87,7 +55,7 @@
           </div>
           <div class="input-wrapper has-icon">
             <svg class="icon-left" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-            <input type="text" id="email" name="email" placeholder="email@medcampus.edu" required autocomplete="username">
+            <input type="text" id="email" name="email" placeholder="your@email.com" required autocomplete="username">
           </div>
         </div>
 
@@ -112,115 +80,35 @@
         <button type="submit" class="btn-submit" id="submitBtn">Sign In</button>
       </form>
 
-      <div class="divider">OR CONTINUE WITH</div>
-      <button class="btn-sso">
-        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
-        University SSO
-      </button>
-
-      <div class="role-switcher">
-        <a href="{{ url('/login') }}" class="role-switch-btn" id="switchPatient">🎓 Pasien</a>
-        <a href="{{ url('/login') }}?role=doctor" class="role-switch-btn" id="switchDoctor">🩺 Dokter</a>
-        <a href="{{ url('/login') }}?role=admin" class="role-switch-btn" id="switchAdmin">⚙️ Admin</a>
-      </div>
-
-      <p class="auth-footer-text">By signing in, you agree to our <a href="javascript:void(0)" onclick="Toast.show('Terms of Service is not available in the demo.', 'info')">Terms of Service</a> and <a href="javascript:void(0)" onclick="Toast.show('Privacy Policy is not available in the demo.', 'info')">Privacy Policy</a>.</p>
+      <p class="auth-footer-text">By signing in, you agree to our <a href="javascript:void(0)" onclick="openPolicyModal('termsModal')">Terms of Service</a> and <a href="javascript:void(0)" onclick="openPolicyModal('privacyModal')">Privacy Policy</a>.</p>
     </section>
   </main>
 
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('js/app-data.js') }}"></script>
   <script src="{{ asset('js/guest.js') }}"></script>
+  
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const role   = (params.get('role') || 'patient').toLowerCase();
-
-    const CONFIG = {
-      patient: {
-        label:       '🎓 Patient Portal',
-        badgeClass:  'patient',
-        title:       'Welcome Back',
-        emailLabel:  'University ID or Email',
-        placeholder: 'student@university.edu',
-        submitClass: '',
-        submitText:  'Sign In',
-        redirect:    '{{ url("/patient/dashboard") }}',
-        allowedRole: ['Student'],
-        hint: {
-          emails: ['b.santoso@student.med.edu', 'm.thorne@student.med.edu'],
-          password: 'medcampus123'
-        }
-      },
-      doctor: {
-        label:       '🩺 Doctor Portal',
-        badgeClass:  'doctor',
-        title:       'Doctor Login',
-        emailLabel:  'Doctor Email',
-        placeholder: 'doctor@medcampus.edu',
-        submitClass: 'doctor',
-        submitText:  'Sign In to Doctor Portal',
-        redirect:    '{{ url("/doctor/dashboard") }}',
-        allowedRole: ['Doctor'],
-        hint: {
-          emails: ['s.jenkins@medcampus.edu', 'e.watson@medcampus.edu'],
-          password: 'medcampus123'
-        }
-      },
-      admin: {
-        label:       '⚙️ Admin Panel',
-        badgeClass:  'admin',
-        title:       'Admin Login',
-        emailLabel:  'Admin Email',
-        placeholder: 'admin@medcampus.edu',
-        submitClass: 'admin',
-        submitText:  'Sign In to Admin Panel',
-        redirect:    '{{ url("/admin/dashboard") }}',
-        allowedRole: ['Admin'],
-        hint: {
-          emails: ['admin@medcampus.edu'],
-          password: 'admin123'
-        }
-      }
-    };
-
-    const cfg = CONFIG[role] || CONFIG.patient;
-
-    document.getElementById('roleBadge').textContent  = cfg.label;
-    document.getElementById('roleBadge').className    = `role-badge ${cfg.badgeClass}`;
-    document.getElementById('pageTitle').textContent  = cfg.title;
-    document.getElementById('emailLabel').textContent = cfg.emailLabel;
-    document.getElementById('email').placeholder      = cfg.placeholder;
-    document.getElementById('submitBtn').textContent  = cfg.submitText;
-    if (cfg.submitClass) document.getElementById('submitBtn').classList.add(cfg.submitClass);
-
-    if (role !== 'patient') {
-      document.getElementById('authToggle').style.display = 'none';
-    }
-
-    document.getElementById('switchPatient').className = 'role-switch-btn' + (role === 'patient' ? ' active-patient' : '');
-    document.getElementById('switchDoctor').className  = 'role-switch-btn' + (role === 'doctor'  ? ' active-doctor'  : '');
-    document.getElementById('switchAdmin').className   = 'role-switch-btn' + (role === 'admin'   ? ' active-admin'   : '');
-
     document.getElementById('loginForm').addEventListener('submit', e => {
       const email    = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
 
       if (!email || !password) {
-        e.preventDefault(); // Cegah kirim kalau kosong
+        e.preventDefault(); 
         Toast.show('Please fill in all fields.', 'error'); 
         return;
       }
 
-      // Kasih efek loading di tombol
       const btn = document.getElementById('submitBtn');
       btn.textContent = 'Authenticating...';
       btn.disabled = true;
       btn.style.opacity = '0.7';
     });
   </script>
+
   <div id="forgotModal" style="position:fixed;inset:0;background:rgba(21,30,45,.6);display:flex;align-items:center;justify-content:center;z-index:300;opacity:0;pointer-events:none;transition:opacity .25s;">
     <div id="forgotCard" style="background:white;border-radius:16px;padding:36px;max-width:400px;width:calc(100% - 32px);box-shadow:15px 15px 0 rgba(175,180,185,.8);transform:translateY(16px);transition:transform .25s;">
-      <h2 style="font-size:18px;margin-bottom:8px;">🔑 Reset Password</h2>
+      <h2 style="font-size:18px;margin-bottom:8px;">Reset Password</h2>
       <p style="font-size:13px;color:#64748b;margin-bottom:24px;">Enter your registered email and we'll send a reset link.</p>
       <div style="margin-bottom:16px;">
         <label style="font-size:12px;font-weight:500;color:#151e2d;display:block;margin-bottom:8px;">Email Address</label>
@@ -231,7 +119,7 @@
       <button id="closeForgotModal" style="width:100%;background:none;border:1px solid #e2e8f0;padding:11px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;">Cancel</button>
     </div>
   </div>
-
+  
   <script>
     const forgotModal = document.getElementById('forgotModal');
     const forgotCard  = document.getElementById('forgotCard');
@@ -258,12 +146,65 @@
       Toast.show('Reset link sent to ' + email + '. Check your inbox.', 'success', 4000);
       closeForgot();
     });
-
   </script>
-<script>
-  document.querySelector('.btn-sso')?.addEventListener('click', () => {
-    Toast.show('University SSO is not configured for this demo environment.', 'info', 4000);
-  });
-</script>
+
+  <div id="termsModal" style="position:fixed;inset:0;background:rgba(21,30,45,.6);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;">
+    <div class="policy-card" style="background:white;border-radius:16px;padding:32px;max-width:500px;width:calc(100% - 32px);max-height:80vh;display:flex;flex-direction:column;box-shadow:15px 15px 0 rgba(175,180,185,.8);transform:translateY(16px);transition:transform .25s;">
+      <h2 style="font-size:18px;margin-bottom:12px;color:var(--primary-green, #529b2e);">Terms of Service</h2>
+      <div style="overflow-y:auto;padding-right:12px;font-size:13px;line-height:1.6;color:#475569;margin-bottom:24px;">
+        <h4 style="color:#151e2d;margin:12px 0 4px;">1. Account Eligibility</h4>
+        <p style="margin:0;">The MedCampus portal is exclusively designed for registered students, faculty, and administrative staff of the university. By creating an account, you confirm that the University ID (NIM/NIP) provided is accurate.</p>
+        
+        <h4 style="color:#151e2d;margin:12px 0 4px;">2. Appointment Booking</h4>
+        <p style="margin:0;">MedCampus operates on a strict Time-Slot system. Users are expected to arrive at least 15 minutes prior to their time slot. Late arrivals may be placed in the waiting queue.</p>
+        
+        <h4 style="color:#151e2d;margin:12px 0 4px;">3. System Misuse</h4>
+        <p style="margin:0;">Any attempt to manipulate the queue system or input false medical data will result in immediate account termination.</p>
+      </div>
+      <button onclick="closePolicyModal('termsModal')" style="width:100%;background:none;border:1px solid #e2e8f0;padding:12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;margin-top:auto;">Tutup / Close</button>
+    </div>
+  </div>
+
+  <div id="privacyModal" style="position:fixed;inset:0;background:rgba(21,30,45,.6);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .25s;">
+    <div class="policy-card" style="background:white;border-radius:16px;padding:32px;max-width:500px;width:calc(100% - 32px);max-height:80vh;display:flex;flex-direction:column;box-shadow:15px 15px 0 rgba(175,180,185,.8);transform:translateY(16px);transition:transform .25s;">
+      <h2 style="font-size:18px;margin-bottom:12px;color:var(--primary-green, #529b2e);">Privacy Policy</h2>
+      <div style="overflow-y:auto;padding-right:12px;font-size:13px;line-height:1.6;color:#475569;margin-bottom:24px;">
+        <h4 style="color:#151e2d;margin:12px 0 4px;">1. Data Collection</h4>
+        <p style="margin:0;">MedCampus collects essential personal information, including your Full Name, University ID, and Email. This data is strictly used to manage your clinic appointments effectively.</p>
+        
+        <h4 style="color:#151e2d;margin:12px 0 4px;">2. Medical Records Confidentiality</h4>
+        <p style="margin:0;">All medical records, diagnoses, symptoms, and prescriptions are strictly confidential. This sensitive health information is exclusively accessible only to attending medical practitioners. MedCampus will never share your medical data without explicit written consent.</p>
+        
+        <h4 style="color:#151e2d;margin:12px 0 4px;">3. Data Security</h4>
+        <p style="margin:0;">We employ standard security measures to protect your health information. Users must ensure they log out after using shared university devices.</p>
+      </div>
+      <button onclick="closePolicyModal('privacyModal')" style="width:100%;background:none;border:1px solid #e2e8f0;padding:12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:#64748b;margin-top:auto;">Tutup / Close</button>
+    </div>
+  </div>
+
+  <script>
+    function openPolicyModal(modalId) {
+      const modal = document.getElementById(modalId);
+      const card = modal.querySelector('.policy-card');
+      modal.style.opacity = '1';
+      modal.style.pointerEvents = 'auto';
+      card.style.transform = 'translateY(0)';
+    }
+
+    function closePolicyModal(modalId) {
+      const modal = document.getElementById(modalId);
+      const card = modal.querySelector('.policy-card');
+      modal.style.opacity = '0';
+      modal.style.pointerEvents = 'none';
+      card.style.transform = 'translateY(16px)';
+    }
+
+    window.addEventListener('click', function(e) {
+      const tModal = document.getElementById('termsModal');
+      const pModal = document.getElementById('privacyModal');
+      if (e.target === tModal) closePolicyModal('termsModal');
+      if (e.target === pModal) closePolicyModal('privacyModal');
+    });
+  </script>
 </body>
 </html>

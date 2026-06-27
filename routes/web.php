@@ -41,6 +41,13 @@ Route::get('/service-guide', function () {
     return view('service-guide');
 });
 
+Route::get('/privacy', function () {
+    return view('privacy');
+});
+
+Route::get('/terms', function () {
+    return view('terms');
+});
 
 // 2. HALAMAN ADMIN
 Route::middleware(['auth'])->group(function () {
