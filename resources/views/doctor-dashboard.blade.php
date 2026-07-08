@@ -142,9 +142,7 @@
                         $btnClass = ($p->status == 'F') ? 'btn-outline' : 'btn-primary';
                         $age = $p->date_of_birth ? \Carbon\Carbon::parse($p->date_of_birth)->age : '?';
                         
-                        $waktuMulai = strtotime($shiftStart ?? '08:00');
-                        $tambahanMenit = ($p->queue_number - 1) * 30;
-                        $time = date('H:i', strtotime("+$tambahanMenit minutes", $waktuMulai));
+                        $time = $p->booking_time ? date('H:i', strtotime($p->booking_time)) : '—';
                     @endphp
                     <tr>
                         <td><span class="queue-badge">{{ $p->queue_number }}</span></td>

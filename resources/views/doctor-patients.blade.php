@@ -115,9 +115,7 @@
                         $btnClass = ($p->status == 'C' || $p->status == 'F') ? 'btn-outline' : 'btn-primary';
                         $age = $p->date_of_birth ? \Carbon\Carbon::parse($p->date_of_birth)->age : '?';
                         
-                        $waktuMulai = strtotime($p->start_time); // Ambil dari Controller
-                        $tambahanMenit = ($p->queue_number - 1) * 30;
-                        $time = date('H:i', strtotime("+$tambahanMenit minutes", $waktuMulai));
+                        $time = $p->booking_time ? date('H:i', strtotime($p->booking_time)) : '—';
                     @endphp
                     <tr class="patient-row" data-status="{{ $p->status }}">
                         <td><span class="queue-badge">{{ $p->queue_number }}</span></td>
