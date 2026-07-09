@@ -60,7 +60,21 @@ class PatientController extends Controller
 
     public function success()
     {
-        return view('success');
+        $userId = Auth::user()->id_user;
+        
+        $latestAppointment = DB::table('appointments')
+            ->join('doctor_schedules', 'appointments.id_schedule', '=', 'doctor_schedules.id_schedule')
+            ->join('users', 'doctor_schedules.id_user', '=', 'users.id_user')
+            ->select(
+                'appointments.*', 
+                'doctor_schedules.room as clinic', 
+                'users.user_name as doctor_name'
+            )
+            ->where('appointments.id_user', $userId)
+            ->orderBy('appointments.created_at', 'desc')
+            ->first();
+
+        return view('success', compact('latestAppointment'));
     }
 
     public function ticket()
