@@ -151,7 +151,7 @@
                         <td><span class="badge {{ $statusClass }}">{{ $statusText }}</span></td>
                         <td>
                             @if($p->status == 'F')
-                                <a href="{{ url('/doctor/records') }}?appointment_id={{ $p->id_appointmsyents }}" 
+                                <a href="{{ url('/doctor/records') }}?appointment_id={{ $p->id_appointments }}" 
                                   class="btn btn-outline" 
                                   style="text-decoration:none;">
                                     View Record
