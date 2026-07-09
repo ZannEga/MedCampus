@@ -55,17 +55,9 @@ class AuthController extends Controller
             }
 
             if ($user->id_role == '3') {
-                $otpCode = rand(100000, 999999);
-
-                $user->otp_code = $otpCode;
-                $user->otp_expires_at = now()->addMinutes(5);
-                $user->save();
-
-                \Illuminate\Support\Facades\Mail::to($user->user_email)->send(new \App\Mail\OtpMail($otpCode));
-
-                $request->session()->put('temp_user_id', $user->id_user); 
-
-                return redirect('/verify-otp');
+                \Auth::login($user);
+                $request->session()->regenerate();
+                return redirect('/admin/dashboard');
             }
 
             \Auth::login($user);
